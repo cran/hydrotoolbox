@@ -1,0 +1,173 @@
+---
+title: "Using hydrotoolbox with Canadian data - Part 1"
+author: "Kevin Shook"
+date: "`r Sys.Date()`"
+output: 
+ rmarkdown::html_vignette:
+   toc: true
+vignette: >
+  %\VignetteIndexEntry{Using hydrotoolbox with Canadian data - Part 1}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r libraries, eval = FALSE}
+library(tidyhydat)
+library(dplyr)
+library(hydrotoolbox)
+```
+
+The package [**tidyhydat**](https://CRAN.R-project.org/package=tidyhydat)
+provides a very easy way to access Canadian hydrometric data. As both **tidyhydat** and 
+`hydrotoolbox` methods work with the **tidyverse**, they work very well with each 
+other.
+
+## Installing tidyhydat and HYDAT
+
+Once you have installed **tidyhydat**, you will need to download the HYDAT sqlite database of
+Canadian hydrometric data. The database is downloaded as soon as you first attempt to query it. 
+It can also be downloaded manually:
+```{r download, eval = FALSE}
+download_hydat()
+```
+
+Note that the database is updated from time to time, and you will be prompted to download 
+the most recent version.
+
+## Combining tidyhydat with hydrotoolbox
+
+Once the database is downloaded, you can query it for data by station ID number.
+Because the function `hy_daily_flows` returns a tibble, we convert it to a data frame, before
+importing it to the `hydromet_station` object. In this example we add the daily flows from
+**tidyhydat** to the `qd` slot.
+
+```{r station, eval = FALSE}
+# Smith Creek near Marchwell, in Saskatchewan
+station_number <- "05ME007"    
+
+daily_vals <- 
+  hy_daily_flows(station_number) %>%
+  as.data.frame()
+  
+
+station_data <- 
+  hm_create() %>%
+  hm_set(qd = daily_vals[ , c("Date", "Value")])
+```
+
+You can also add the station metadata to the station object. In Canada, many basin have variable
+contributing fractions, caused by the existence of depressional storage. In these basins, 
+the effective area is that portion of the basin which contributes flow at least one year in two.
+Some Canadian basins are designated as being part of the Reference Hydrometric Basin Network,
+which consists of stations having long records without much human interference. 
+
+```{r metadata, eval = FALSE}
+meta_data <- hy_stations(station_number)
+
+station_data <- hm_set(station_data, 
+                       id = meta_data$STATION_NUMBER[1],
+                       station = meta_data$STATION_NAME[1], 
+                       country = "Canada",
+                       lat = meta_data$LATITUDE[1],
+                       long = meta_data$LONGITUDE[1],
+                       province = meta_data$PROV_TERR_STATE_LOC[1],
+                       active = (meta_data$HYD_STATUS[1] == "ACTIVE"),
+                       basin_area = meta_data$DRAINAGE_AREA_GROSS[1],
+                       basin_eff = meta_data$DRAINAGE_AREA_EFFECT[1],
+                       other_1 = paste("RHBN:", meta_data$RHBN[1]))
+```
+
+Having read in the data, we can now plot the flows
+
+```{r daily_plot, fig.width = 6, fig.height = 4, eval = FALSE}
+hm_plot(obj = station_data, slot_name = "qd", col_name = list("Value"))
+```
+
+The daily flows can be aggregated to monthly or yearly values
+
+```{r monthly_plot, fig.width = 6, fig.height = 4, eval = FALSE}
+monthly <- hm_agg(station_data, 
+                  slot_name = "qd", 
+                  fun = "mean", 
+                  period = "monthly",
+                  col_name = "Value")
+
+monthly %>%
+  hm_plot(slot_name = "qd",
+          col_name = list("Value_mean")
+          )
+```
+
+```{r annual_plot, fig.width = 6, fig.height = 4, warning = FALSE, eval = FALSE}
+
+yearly <- hm_agg(station_data, 
+                 slot_name = "qd", 
+                 fun = "mean", 
+                 period = "annually", 
+                 col_name = "Value")
+
+yearly %>% 
+  hm_plot(slot_name = "qd", 
+          col_name = list("Value_mean"))
+```
+
+## Using an own made function to build the object
+
+Although this version of the `hydrotoolbox` package does not offer the ability to build
+automatically a hydro-meteorological station from HYDAT database, you can save a lot of 
+time by recycling the following function:
+
+```{r my_fun, eval = FALSE}
+# before running this function, the packages
+# tidyhydat and hydrotoolbox should be loaded
+
+# station_number: character with station ID
+build_hydat <- function(station_number){
+  # get daily flow series
+  q <-
+    hy_daily_flows(station_number) %>%
+    as.data.frame()
+  
+  # get station metadata
+  meta_table <- 
+    hy_stations(station_number) %>%
+    as.data.frame()
+  
+  # set values
+  out_hm <- 
+    hm_create() %>%
+    hm_set(qd = q[ , c("Date", "Value")], 
+           id = meta_table$STATION_NUMBER[1],
+           station = meta_table$STATION_NAME[1], 
+           country = "Canada",
+           lat = meta_table$LATITUDE[1],
+           long = meta_table$LONGITUDE[1],
+           province = meta_table$PROV_TERR_STATE_LOC[1],
+           active = (meta_table$HYD_STATUS[1] == "ACTIVE"),
+           basin_area = meta_table$DRAINAGE_AREA_GROSS[1],
+           basin_eff = meta_table$DRAINAGE_AREA_EFFECT[1],
+           other_1 = paste("RHBN:", meta_table$RHBN[1]))
+}
+```
+
+once the function is loaded in the *Global Environment*, we set up the station
+
+```{r fun_applied, eval = FALSE}
+# we construct the Smith Creek near Marchwell 
+# but in a single code line
+
+smith_creek <- build_hydat(station_number = "05ME007")
+
+smith_creek %>% 
+  hm_show(slot_name = c("id", "station", "country", "qd"))
+```
+
+Since the builder function is the only one that differs from what was developed for
+SNIH data, we recommend (re)visiting this vignette (`vignette ('snih_arg', package = 'hydrotoolbox')`) to explore some of the available methods.

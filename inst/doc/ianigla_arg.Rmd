@@ -1,0 +1,128 @@
+---
+title: "(04) IANIGLA dataset"
+author: "Ezequiel Toum"
+date: "`r Sys.Date()`"
+output: 
+ rmarkdown::html_vignette:
+   toc: true
+vignette: >
+  %\VignetteIndexEntry{(04) IANIGLA dataset}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r}
+library(hydrotoolbox)
+```
+
+## IANIGLA dataset
+
+El sistema de monitoreo meteorológico de alta montaña es un proyecto conjunto entre el Instituto
+Argentino de Nivología, Glaciología y Ciencias Ambientales (IANIGLA),
+la Agencia de Cambio Climático del Gobierno de la provincia de Mendoza y el Departamento General
+de Irrigación (DGI); el mismo comprendió la instalación de siete estaciones meteorológicas de
+última  generación para la medición, en tiempo real, de las principales variables del tiempo que
+condicionan los intercambios de masa y energía entre la atmósfera y la superficie terrestre.
+
+***
+
+The high mountain meteorological monitoring system is a joint project between the *Instituto Argentino de Nivología, Glaciología y Ciencias Ambientales* (IANIGLA), the *Agencia de Cambio Climático del Gobierno* of the Mendoza province and the *Departamento General de Irrigación*
+(DGI); it included the installation of seven state-of-the-art meteorological stations to
+the measurement, in real time, of the main forcing variables (at surface level) that influence
+the mass and energy exchanges between the atmosphere and the earth's surface.
+
+## Reading individual files
+
+La página web permite descargar las variables medidas en cada una de las siete estaciones. 
+El paquete **hydrotoolbox** ofrece la posibilidad de leer estos archivos 
+(formato *.csv*) de manera automática mediante la función `read_ianigla()`. Al hacerlo, se cargará
+al *Global Environment* de **R** un `data.frame` con los datos del archivo original. Cabe destacar
+que esta función rellena automáticamente los vacíos existentes entre registros con `NA_real_`.
+Las siguientes líneas de código muestran cómo aplicar esta función con la estación Cuevas.
+
+***
+
+The website allows you to download the variables measured at each of the seven stations.
+The **hydrotoolbox** package offers the ability to read these files (*.csv* format) automatically
+using the `read_ianigla()` function. Doing so will load to the *Global Environment* the original 
+series as `data.frame`. It should be noted that this function automatically fills the gaps between
+records with `NA_real_`. The following lines of code show how to apply this function with the
+Cuevas station.
+
+```{r read_fun, eval=FALSE,fig.width = 6, fig.height = 4}
+# set path to file
+path_file <- system.file('extdata', 'ianigla_cuevas.csv',
+             package = 'hydrotoolbox')
+
+# read with default names
+head( read_ianigla(path = path_file) )
+
+# set column names
+head(
+read_ianigla(path = path_file,
+             out_name = c('tair(°C)', 'rh(%)', 'patm(mbar)',
+                           'p(mm)', 'wspd(km/hr)', 'wdir(°)',
+                           'kin(kW/m2)', 'hsnow(cm)', 'tsoil(°C)' ) )
+)
+```
+
+Si bien esta función resulta de gran utilidad, a medida que la cantidad de variables a analizar
+crece, cargar estas tablas, ordenarlas y modificarlas, se vuelve tarea complicada. La solución
+que ofrece **hydrotoolbox** es la de trabajar con los objetos y métodos que el paquete provee. 
+En las siguientes secciones muestro cómo usarlos. 
+
+***
+ 
+Although this function is very useful, as the number of variables to be analyzed
+grows, loading these tables, ordering and modifying them becomes a complicated task. 
+The solution that **hydrotoolbox** offers is to work with the objects and methods 
+that the package provides. In the following sections I will show you how to use them.
+
+
+## Using classes and methods to build a meteorological station
+
+Como menciono en los principios de diseño de este paquete (`vignette('package_overview', package = 'hydrotoolbox')`), los datos que se registran en las estaciones deben almacenarse en un mismo
+objeto. Por ello primero habrá que crear dicho objeto (o estación hidro-meteorológica) y luego
+usar `hm_build()`, un método que permite cargar automáticamente al objeto todas las variables
+que la estación real registra. 
+
+***
+
+As I mentioned in the design principles of this package (`vignette ('package_overview', package = 'hydrotoolbox')`), the data that is recorded in the stations must be stored in the same
+object. For this reason, you must first create the object (or hydro-meteorological station) and
+then use `hm_build()`, a method that allows you to automatically load all variables to the object
+that the real world station records.
+
+```{r build, eval = FALSE, fig.width = 6, fig.height = 4}
+# path to all example files
+path <- system.file('extdata', package = 'hydrotoolbox')
+
+# ianigla file
+cuevas <- 
+  hm_create() %>%
+  hm_build(bureau = 'ianigla', path = path,
+           file_name = 'ianigla_cuevas.csv',
+           slot_name = c('tair', 'rh', 'patm',
+                         'precip', 'wspd', 'wdir',
+                         'kin', 'hsnow', 'tsoil'),
+           by = 'hour',
+           out_name = c('tair(°C)', 'rh(%)', 'patm(mbar)',
+                        'p(mm)', 'wspd(km/hr)', 'wdir(°)',
+                        'kin(kW/m2)', 'hsnow(cm)', 'tsoil(°C)' )
+          ) 
+```
+
+Dado que la función constructora es la única que difiere de lo desarrollado para 
+los datos del SNIH, recomiendo (re)visitar esta viñeta (`vignette('snih_arg', package = 'hydrotoolbox')`)
+
+***
+
+Since the constructor function is the only one that differs from what was developed for
+SNIH data, I recommend (re)visiting this vignette (`vignette ('snih_arg', package = 'hydrotoolbox')`)

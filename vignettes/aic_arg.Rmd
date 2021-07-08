@@ -1,0 +1,83 @@
+---
+title: "(07) AIC dataset"
+author: "Ezequiel Toum"
+date: "`r Sys.Date()`"
+output: 
+ rmarkdown::html_vignette:
+   toc: true
+vignette: >
+  %\VignetteIndexEntry{(07) AIC dataset}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r}
+library(hydrotoolbox)
+```
+
+## AIC dataset
+
+La Autoridad Interjurisdiccional de las Cuencas de los ríos Limay, Neuquén y Negro 
+(AIC), es un organismo que tiene por objeto entender en todo 
+lo relativo a la administración, control, uso y preservación de las cuencas de los ríos 
+mencionados. Entre otras tareas, mantiene operativas una gran cantidad de estaciones 
+nivo-meteorológicas. Estos datos sólo son accesibles mediante acuerdo legal con el AIC.
+
+## Reading individual files
+
+El paquete **hydrotoolbox** ofrece la posibilidad de leer estos archivos 
+(formato *.xls*) de manera automática mediante la función `read_aic()`. Al hacerlo, se cargará
+al *Global Environment* de **R** un `data.frame` con los datos del archivo original. Cabe destacar
+que esta función rellena automáticamente los vacíos existentes entre registros con `NA_real_`.
+
+```{r read_fun, eval = FALSE, fig.width = 6, fig.height = 4}
+# if you want to get the sheet's names
+read_aic(path = path, get_sheet = TRUE)
+
+# loading the series in a data.frame
+my_data <- 
+  read_aic(path = path,
+         by = 'day', 
+         sheet = 'CERRO NEVADO')
+```
+
+Si bien esta función resulta de gran utilidad, a medida que la cantidad de variables a analizar
+crece, cargar estas tablas, ordenarlas y modificarlas, se vuelve tarea complicada. La solución
+que ofrece **hydrotoolbox** es la de trabajar con los objetos y métodos que el paquete provee. 
+En las siguientes secciones muestro cómo usarlos. 
+
+## Using classes and methods to build a meteorological station
+
+Como menciono en los principios de diseño de este paquete (`vignette('package_overview', package = 'hydrotoolbox')`), los datos que se registran en las estaciones deben almacenarse en un mismo
+objeto. Por ello primero habrá que crear dicho objeto (o estación hidro-meteorológica) y luego
+usar `hm_build()`, un método que permite cargar automáticamente al objeto todas las variables
+que la estación real registra. 
+
+
+```{r build, eval = FALSE, fig.width = 6, fig.height = 4}
+# set path and file name
+my_path <- '/home/.../my_folder'
+my_file <- 'AIC_data.xls'
+
+# build the station
+nevado <- 
+  hm_create() %>%
+  hm_build(bureau = 'aic', 
+           path = my_path, 
+           file_name = my_file, 
+           slot_name = c('precip', 'tmax', 'tmin', 
+                         'tmean', 'rh', 'wspd',
+                         'wdir', 'swe'), 
+           by = 'day',
+           sheet = 'CERRO NEVADO')
+```
+
+Dado que la función constructora es la única que difiere de lo desarrollado para 
+los datos del SNIH, recomiendo (re)visitar esta viñeta (`vignette('snih_arg', package = 'hydrotoolbox')`).

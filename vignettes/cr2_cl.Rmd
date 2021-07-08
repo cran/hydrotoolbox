@@ -1,0 +1,113 @@
+---
+title: "(06) CR2 dataset"
+author: "Ezequiel Toum"
+date: "`r Sys.Date()`"
+output: 
+ rmarkdown::html_vignette:
+   toc: true
+vignette: >
+  %\VignetteIndexEntry{(06) CR2 dataset}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r}
+library(hydrotoolbox)
+```
+
+## CR2 dataset
+
+El Explorador Climático utiliza las bases de datos compiladas por el Centro del Ciencia 
+del Clima y Resiliencia (**CR2**), que desde su creación ha trabajado
+en recopilar y consolidar una extensa, completa y actualizada base de datos de observaciones
+climatológicas disponible para Chile.
+
+***
+
+The Climate Explorer uses the databases compiled by the *Centro del Ciencia del Clima y Resiliencia* (**CR2**), which since its creation has worked
+in compiling and consolidating an extensive, complete and updated database of weather 
+observations for Chile.
+
+## Reading individual files
+
+El paquete **hydrotoolbox** ofrece la posibilidad de leer estos archivos 
+(formato *.csv*) de manera automática mediante la función `read_cr2()`. Al hacerlo, se cargará
+al *Global Environment* de **R** un `data.frame` con los datos del archivo original. Cabe destacar
+que esta función rellena automáticamente los vacíos existentes entre registros con `NA_real_`.
+Las siguientes líneas de código muestran cómo aplicar esta función con la estación Yeso.
+
+***
+
+The **hydrotoolbox** package offers the ability to read these files (*.csv* format) automatically
+using the `read_cr2()` function. Doing so will load to the *Global Environment* the original 
+series as `data.frame`. It should be noted that this function automatically fills the gaps between
+records with `NA_real_`. The following lines of code show how to apply this function with the
+Yeso station.
+
+```{r read_fun, eval=FALSE, fig.width = 6, fig.height = 4}
+# set path to file
+path_tmax <- system.file('extdata', 'cr2_tmax_yeso_embalse.csv',
+             package = 'hydrotoolbox')
+
+# read file with default colname
+head( read_cr2(path = path_tmax) )
+
+# assign a column name
+head( read_cr2(path = path_tmax, out_name = 'tmax(°C)') )
+```
+
+Si bien esta función resulta de gran utilidad, a medida que la cantidad de variables a analizar
+crece, cargar estas tablas, ordenarlas y modificarlas, se vuelve tarea complicada. La solución
+que ofrece **hydrotoolbox** es la de trabajar con los objetos y métodos que el paquete provee. 
+En las siguientes secciones muestro cómo usarlos. 
+
+***
+ 
+Although this function is very useful, as the number of variables to be analyzed
+grows, loading these tables, ordering and modifying them becomes a complicated task. 
+The solution that **hydrotoolbox** offers is to work with the objects and methods 
+that the package provides. In the following sections I will show you how to use them.
+
+## Using classes and methods to build a meteorological station
+
+Como menciono en los principios de diseño de este paquete (`vignette('package_overview', package = 'hydrotoolbox')`), los datos que se registran en las estaciones deben almacenarse en un mismo
+objeto. Por ello primero habrá que crear dicho objeto (o estación hidro-meteorológica) y luego
+usar `hm_build()`, un método que permite cargar automáticamente al objeto todas las variables
+que la estación real registra. 
+
+***
+
+As I mentioned in the design principles of this package (`vignette ('package_overview', package = 'hydrotoolbox')`), the data that is recorded in the stations must be stored in the same
+object. For this reason, you must first create the object (or hydro-meteorological station) and
+then use `hm_build()`, a method that allows you to automatically load all variables to the object
+that the real world station records.
+
+```{r build, eval = FALSE, fig.width = 6, fig.height = 4}
+# path to all example files
+path <- system.file('extdata', package = 'hydrotoolbox')
+
+# cr2 file
+yeso <- 
+  hm_create() %>%
+  hm_build(bureau = 'cr2', path = path,
+           file_name = 'cr2_tmax_yeso_embalse.csv',
+           slot_name = c('tmax'),
+           by = 'day',
+           out_name = c('tair(°C)' )
+          )  
+```
+
+Dado que la función constructora es la única que difiere de lo desarrollado para 
+los datos del SNIH, recomiendo (re)visitar esta viñeta (`vignette('snih_arg', package = 'hydrotoolbox')`)
+
+***
+
+Since the constructor function is the only one that differs from what was developed for
+SNIH data, I recommend (re)visiting this vignette (`vignette ('snih_arg', package = 'hydrotoolbox')`)

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Ezequiel Toum" />
+
+<meta name="date" content="2021-07-07" />
+
+<title>(03) MNEMOS generated-data</title>
+
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">(03) MNEMOS generated-data</h1>
+<h4 class="author">Ezequiel Toum</h4>
+<h4 class="date">2021-07-07</h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#mnemos-generated-data">MNEMOS generated data</a></li>
+<li><a href="#reading-individual-files">Reading individual files</a></li>
+<li><a href="#using-classes-and-methods-to-build-a-meteorological-station">Using classes and methods to build a meteorological station</a></li>
+</ul>
+</div>
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(hydrotoolbox)</span></code></pre></div>
+<div id="mnemos-generated-data" class="section level2">
+<h2>MNEMOS generated data</h2>
+<p>Esta viñeta ejemplifica el uso del paquete para los datos generados por el software MNEMOS. Dichos registros provienen de la base de datos del SNIH, por lo que la única diferencia radica en el formato de presentación de las series.</p>
+<hr />
+<p>This vignette exemplifies the use of the package for the data generated by the software MNEMOS. These records come from the SNIH database, so the only difference lies in the presentation format of the series.</p>
+</div>
+<div id="reading-individual-files" class="section level2">
+<h2>Reading individual files</h2>
+<p>El formato de salida del software MNEMOS es el de una planilla excel que en sus pestañas contiene las distintas variables que registra una estación hidro-meteorológica.</p>
+<hr />
+<p>The output format of the MNEMOS software is that of an excel spreadsheet that in its sheets it contains the different variables recorded by a hydro-meteorological station.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># set path to file</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>path &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&#39;extdata&#39;</span>, <span class="st">&#39;mnemos_guido.xlsx&#39;</span>, <span class="dt">package =</span> <span class="st">&#39;hydrotoolbox&#39;</span>) </span>
+<span id="cb2-3"><a href="#cb2-3"></a></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="co"># as we can have multiple sheets, we can get an idea of its content</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="kw">read_mnemos</span>(<span class="dt">path =</span> path, <span class="dt">get_sheet =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb2-6"><a href="#cb2-6"></a></span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="co"># suppose that we want to read the daily minimum temperature</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a>tmax_guido &lt;-<span class="st"> </span><span class="kw">read_mnemos</span>(<span class="dt">path =</span> path, <span class="dt">by =</span> <span class="st">&#39;day&#39;</span>,</span>
+<span id="cb2-9"><a href="#cb2-9"></a>                          <span class="dt">out_name =</span> <span class="st">&#39;tmax(ºC)&#39;</span>, <span class="dt">sheet =</span> <span class="st">&#39;11413-017&#39;</span>)</span>
+<span id="cb2-10"><a href="#cb2-10"></a></span>
+<span id="cb2-11"><a href="#cb2-11"></a><span class="kw">plot</span>(<span class="dt">x =</span> tmax_guido[ , <span class="dv">1</span>], <span class="dt">y =</span> tmax_guido[ , <span class="dv">2</span>],</span>
+<span id="cb2-12"><a href="#cb2-12"></a>     <span class="dt">col =</span> <span class="st">&#39;dodgerblue&#39;</span>, <span class="dt">type =</span> <span class="st">&#39;l&#39;</span>, </span>
+<span id="cb2-13"><a href="#cb2-13"></a>     <span class="dt">xlab =</span> <span class="st">&#39;date&#39;</span>, <span class="dt">ylab =</span> <span class="st">&#39;Tmin(ºC)&#39;</span>)</span></code></pre></div>
+<p>Si bien esta función resulta de gran utilidad, a medida que la cantidad de variables a analizar crece, cargar estas tablas, ordenarlas y modificarlas, se vuelve tarea complicada. La solución que ofrece <strong>hydrotoolbox</strong> es la de trabajar con los objetos y métodos que el paquete provee. En las siguientes secciones muestro cómo usarlos.</p>
+<hr />
+<p>Although this function is very useful, as the number of variables to be analyzed grows, loading these tables, ordering and modifying them becomes a complicated task. The solution that <strong>hydrotoolbox</strong> offers is to work with the objects and methods that the package provides. In the following sections I will show you how to use them.</p>
+</div>
+<div id="using-classes-and-methods-to-build-a-meteorological-station" class="section level2">
+<h2>Using classes and methods to build a meteorological station</h2>
+<p>Como menciono en los principios de diseño de este paquete (<code>vignette(&#39;package_overview&#39;, package = &#39;hydrotoolbox&#39;)</code>), los datos que se registran en las estaciones deben almacenarse en un mismo objeto. Por ello primero habrá que crear dicho objeto (o estación hidro-meteorológica) y luego usar <code>hm_build()</code>, un método que permite cargar automáticamente al objeto todas las variables que la estación real registra.</p>
+<hr />
+<p>As I mentioned in the design principles of this package (<code>vignette (&#39;package_overview&#39;, package = &#39;hydrotoolbox&#39;)</code>), the data that is recorded in the stations must be stored in the same object. For this reason, you must first create the object (or hydro-meteorological station) and then use <code>hm_build()</code>, a method that allows you to automatically load all variables to the object that the real world station records.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># in this path you will find the raw example data </span></span>
+<span id="cb3-2"><a href="#cb3-2"></a>path &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&#39;extdata&#39;</span>, <span class="dt">package =</span> <span class="st">&#39;hydrotoolbox&#39;</span>)</span>
+<span id="cb3-3"><a href="#cb3-3"></a></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="kw">list.files</span>(path)</span>
+<span id="cb3-5"><a href="#cb3-5"></a></span>
+<span id="cb3-6"><a href="#cb3-6"></a><span class="co"># we load in a single object (hydromet_station class)</span></span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="co"># the streamflow and water height series</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a>guido &lt;-<span class="st"> </span></span>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="st">  </span><span class="kw">hm_create</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># create the met-station</span></span>
+<span id="cb3-10"><a href="#cb3-10"></a><span class="st">  </span><span class="kw">hm_build</span>(<span class="dt">bureau =</span> <span class="st">&#39;mnemos&#39;</span>, <span class="dt">path =</span> path,</span>
+<span id="cb3-11"><a href="#cb3-11"></a>           <span class="dt">file_name =</span> <span class="st">&#39;mnemos_guido.xlsx&#39;</span>,</span>
+<span id="cb3-12"><a href="#cb3-12"></a>           <span class="dt">slot_name =</span> <span class="kw">c</span>(<span class="st">&#39;qd&#39;</span>, <span class="st">&#39;evap&#39;</span>, <span class="st">&#39;tair&#39;</span>,</span>
+<span id="cb3-13"><a href="#cb3-13"></a>                         <span class="st">&#39;tmax&#39;</span>, <span class="st">&#39;tmin&#39;</span>, <span class="st">&#39;wspd&#39;</span>),</span>
+<span id="cb3-14"><a href="#cb3-14"></a>           <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&#39;day&#39;</span>, <span class="st">&#39;day&#39;</span>, <span class="st">&#39;6 hour&#39;</span>, </span>
+<span id="cb3-15"><a href="#cb3-15"></a>                  <span class="st">&#39;day&#39;</span>, <span class="st">&#39;day&#39;</span>, <span class="st">&#39;6 hour&#39;</span>), </span>
+<span id="cb3-16"><a href="#cb3-16"></a>           <span class="dt">out_name =</span> <span class="kw">c</span>(<span class="st">&#39;qd(m3/s)&#39;</span>, <span class="st">&#39;e(mm/d)&#39;</span>, <span class="st">&#39;tdb(ºC)&#39;</span>,</span>
+<span id="cb3-17"><a href="#cb3-17"></a>                        <span class="st">&#39;tmax(ºC)&#39;</span>, <span class="st">&#39;tmin(ºC)&#39;</span>, <span class="st">&#39;w(km/h)&#39;</span>) ) </span>
+<span id="cb3-18"><a href="#cb3-18"></a></span>
+<span id="cb3-19"><a href="#cb3-19"></a><span class="co"># we can explore the data-set inside it by using hm_show</span></span>
+<span id="cb3-20"><a href="#cb3-20"></a>guido <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">hm_show</span>()</span></code></pre></div>
+<p>Dado que la función constructora es la única que difiere de lo desarrollado para los datos del SNIH, recomiendo (re)visitar esta viñeta (<code>vignette(&#39;snih_arg&#39;, package = &#39;hydrotoolbox&#39;)</code>)</p>
+<hr />
+<p>Since the constructor function is the only one that differs from what was developed for SNIH data, I recommend (re)visiting this vignette (<code>vignette (&#39;snih_arg&#39;, package = &#39;hydrotoolbox&#39;)</code>)</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

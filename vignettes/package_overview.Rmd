@@ -1,0 +1,148 @@
+---
+title: "(01) Package Overview"
+author: "Ezequiel Toum"
+date: "`r Sys.Date()`"
+output: 
+ rmarkdown::html_vignette:
+   toc: true
+vignette: >
+  %\VignetteIndexEntry{(01) Package Overview}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(hydrotoolbox)
+```
+
+## Motivation
+
+Los datos hidro-meteorológicos proporcionados por agencias federales, grupos
+de investigación y empresas privadas son de naturaleza heterogénea (Argentina y
+Chile). Esta situación es multicausal: los registros se guardan en diversos formatos,
+los procesos de control de calidad no son los mismos entre agencias e incluso
+varían dentro del mismo organismo, las variables no siempre se registran en la
+misma resolución temporal, existen vacíos, datos dudosos, entre otros. Incluso, una
+vez resueltos estos inconvenientes, es necesario contar con métodos para poder
+manipular las series: agregación temporal, visualización dinámica para su análisis,
+gráficos estáticos para publicar y/o comunicar resultados, técnicas para corregir y/o
+modificar las series, entre otros. **hydrotoolbox** es un paquete escrito en el lenguaje
+R bajo el paradigma de programación orientada a objetos y fue diseñado para
+cumplir con estas tareas. Esta versión está pensada para trabajar no solo con series
+hidro-meteorológicas sino que también con cualquier conjunto de series temporales
+que puedan colocarse en una tabla. 
+
+***
+
+The hydro-meteorological data provided by federal agencies, research groups and private companies
+are all but homogeneous (Argentina and Chile). There are many reasons for this issue: diverse raw
+data formats, data-quality check process is not the same between agencies (and sometimes even 
+inside the same bureau), meteorological variables are not always recorded in the same time
+resolution, there are time-steps  gaps between measurements and mistrustful time periods. Even once
+these problems are solved, tools are needed to efficiently manipulate this data-sets: functions for
+automatically reading the raw data, temporally aggregation of the data-sets, visualization 
+techniques for analyzing the data in combination with static plots for publishing results, data
+manipulation techniques in order to correct the time-series, among others. **hydrotoolbox** is an
+object-oriented R package created with the aim of giving a pragmatic answer to the above mentioned
+issues. It could also be used to pre and post-process the input/oputput data of hydrological
+models. 
+
+***
+
+Si bien el paquete contiene funciones y métodos que son exclusivos para trabajar con las 
+principales bases de datos de Argentina y Chile, su uso es general. A modo de ejemplo, 
+el usuario las viñetas muestran la cómo usar el paquete con datos provenientes de 
+Canadá (`vignettes(package = "hydrotoolbox")`).
+
+***
+
+Although the package has specific functions and methods to work with the main hydro-meteorological
+databases of Argentina and Chile, its use is general. As an example, the reader will find in these
+vignettes applications with data from Canada (see `vignettes(package = "hydrotoolbox")`). 
+
+## Package design principles
+
+  1. **Las series deben aglomerarse en estaciones** para que el usuario pueda
+  agrupar los datos según su ubicación espacial, es decir, en estaciones meteorológicas.
+  Esta característica permite que se puedan comparar series registradas
+  en una misma estación y entre diferentes estaciones sin perder su localización
+  geográfica.
+  
+  2. **Las modificaciones deben registrarse en un mismo archivo** para evitar
+  la multiplicidad de versiones. Esto sucede porque los instrumentos fallan, no
+  todas las variables no se miden en la misma resolución temporal, se producen
+  cortes de energía o porque algunas veces las propias condiciones naturales del
+  lugar inducen a mediciones erróneas que alguna requieren corrección (*e.g.*: el
+  sub-registro de eventos níveos como consecuencia del efecto del viento sobre
+  el totalizador).
+  
+  3. **Visualización expeditiva y flexible** para analizar y comunicar resultados.
+  Los gráficos se deben poder ver de manera estática y dinámica.
+  
+  4. Deben existir **funciones generales** para la manipulación de los datos.
+  
+  5. **Diseño abierto** para incorporar nuevos objetos y/o métodos que permitan
+  seguir ampliando la funcionalidad del paquete.
+  
+***
+
+  1. **Data should be agglomerated in stations**:  this criteria is guided by a geographic judgment,
+  so the data must be group according to their spatial location, that means in meteorological
+  stations. This feature allows for the comparison of variables measured in the same station and
+  between different stations without loosing their geographic location, a fundamental aspect for the
+  physical interpretation of the recorded data.
+  
+  2. **Modifications must be recorded in a single file**: is unavoidable that raw data came with some
+  kind of error or mistrustful record periods. This is because instruments fails, variables are not
+  measured at the same temporal resolution, there are energy shortcuts or because the 
+  natural conditions induce to errors (e.g.: snowfall wind driven undercatch). As a
+  direct consequence, its crucial to get access to all the data versions (avoiding the
+  multiple files version issue).
+  
+  3. **Quick plotting features**: a fast and flexible data visualization technique is the best
+  way of analyze and communicate results. The plotting should be done in static or dynamic fashion.  
+  
+  4. **Hydrological related functionality**: this feature avoids the endless own made function
+  creation, saving a lot of time among *R-hydro* community.
+  
+  5. **An open ended design**: in order to allow the incorporation of new objects, methods and
+  functions.
+
+## Classes and subclasses
+
+Existe una clase y dos subclases:
+
+ A. **clase`hydromet`**: contiene los metadatos de una estación (*e.g.*: coordenadas geográficas, 
+ nombre de la cuenca, país, entre otros). Ver `?hydromet`.
+
+ B. **subclase `hydromet_station`**: le adiciona a la clase `hydromet` una tabla (`data.frame`)
+ por cada variable hidro-meteorológica. Esto le permite al usuario guardar toda la información
+ concerniente a una estación real. Ver `?hydromet_station`.
+ 
+ C. **subclase `hydromet_compact`**: fue creada para guardar en una sola tabla (`data.frame`)
+ todas las series de ineterés. Adquiere especial interés cuando se quieren almacenar salidas o
+ entradas de un modelo o varias series de una misma variable (*e.g.*: precipitación).
+ Ver `?hydromet_compact`.
+ 
+***
+
+There is a single class and two subclasses: 
+
+  A. **`hydromet` class**: contains the station metadata (e.g.: geographical coordinates, river
+  basin, province, country). See `?hydromet`.
+  
+  B. **`hydromet_station` subclass**: adds to the `hydromet` metadata a single table (`data.frame`)
+  per hydro-meteorological recorded variable. This allows the user to store all the information that
+  surrounds a real world station. See `?hydromet_station`.
+  
+  C. **`hydromet_compact` subclass**: it was created to store in a single `data.frame` (called 
+  *compact*) all the series. This object was designed to save input/output data of hydrological 
+  models and to store (in the same table) series of the same variable. The last feature allows
+  performing, for example, regional analyses. See `?hydromet_compact`.

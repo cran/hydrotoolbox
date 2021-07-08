@@ -1,0 +1,273 @@
+---
+title: "(02) SNIH dataset"
+author: "Ezequiel Toum"
+date: "`r Sys.Date()`"
+output: 
+ rmarkdown::html_vignette:
+   toc: true
+vignette: >
+  %\VignetteIndexEntry{(02) SNIH dataset}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r}
+library(hydrotoolbox)
+```
+
+## Servicio Nacional de Información Hídrica (SNHI) dataset
+
+Sin lugar a dudas, el SNIH posee la más extensa base de datos hidro-meteorológicos (tanto desde
+el punto de vista espacial como temporal) para la  República Argentina (SNIH). 
+En él se pueden encontrar los registros de estaciones desde la Quiaca a Tierra del Fuego,
+además contiene series que datan de principios del siglo pasado.
+
+***
+
+Without a doubt, the SNIH has the most extensive hydro-meteorological database (both from
+the spatial and temporal point of view) for the Argentine Republic (SNIH).
+In it the user can find the records of stations from La Quiaca to Tierra del Fuego (northernmost 
+and southernmost places respectively), it also contains series dating from the beginning of
+the last century.
+
+## Reading individual files
+
+La página web permite descargar las variables medidas en cada estación de 
+a una por vez. El paquete **hydrotoolbox** ofrece la posibilidad de leer estos archivos 
+(formato *.xlsx*) de manera automática mediante la función `read_snih()`. Al hacerlo, se cargará
+al *Global Environment* de **R** un `data.frame` con los datos del archivo original. Cabe destacar
+que esta función rellena automáticamente los vacíos existentes entre registros con `NA_real_`.
+Las siguientes líneas de código muestran cómo aplicar esta función con la serie de caudales 
+medios diarios registradas en la estación Guido (provincia de Mendoza). 
+
+***
+
+The website allows you to download the variables measured at each station one at a time. **hydrotoolbox ** allows to read these files (*.xlsx* format) automatically using the `read_snih()`
+function. Doing so will load to the *Global Environment* a `data.frame` with the data from the
+original file. It should be noted that this function automatically fills the gaps between records 
+with `NA_real_`. In the following code lines I show how to apply this function with the 
+daily mean streamflow series recorded at the Guido station (Mendoza province).
+
+```{r read_fun, eval=FALSE, fig.width = 6, fig.height = 4}
+# set path to file
+path_file <- system.file('extdata', 'snih_qd_guido.xlsx', package = 'hydrotoolbox')
+
+# read daily mean streamflow with default column name
+guido_qd <- read_snih(path = path_file, by = 'day') 
+
+head(guido_qd)
+
+# now we use the function with column name
+rm(guido_qd)
+guido_qd <- read_snih(path = path_file,  by = 'day', 
+                      out_name = 'qd(m3/s)') 
+
+head(guido_qd)
+
+# plot the series
+plot(x = guido_qd[ , 1], y = guido_qd[ , 2], type = 'l', 
+     main = 'Daily mean streamflow at Guido (Mendoza basin)', 
+     xlab = 'Date', ylab = 'Q(m3/s)', col = 'dodgerblue', lwd = 1,
+     ylim = c(0, 200))
+```
+
+Si bien esta función resulta de gran utilidad, a medida que la cantidad de variables a analizar
+crece, cargar estas tablas, ordenarlas y modificarlas, se vuelve tarea complicada. La solución
+que ofrece **hydrotoolbox** es la de trabajar con los objetos y métodos que el paquete provee. 
+En las siguientes secciones muestro cómo usarlos. 
+
+***
+ 
+Although this function is very useful, as the number of variables to be analyzed
+grows, loading these tables, ordering and modifying them becomes a complicated task. 
+The solution that **hydrotoolbox** offers is to work with the objects and methods 
+that the package provides. In the following sections I will show you how to use them.
+
+
+## Using classes and methods to build a meteorological station
+
+Como menciono en los principios de diseño de este paquete (`vignette('package_overview', package = 'hydrotoolbox')`), los datos que se registran en las estaciones deben almacenarse en un mismo
+objeto. Por ello primero habrá que crear dicho objeto (o estación hidro-meteorológica) y luego
+usar `hm_build()`, un método que permite cargar automáticamente al objeto todas las variables
+que la estación real registra. 
+
+***
+
+As I mentioned in the design principles of this package (`vignette ('package_overview', package = 'hydrotoolbox')`), the data that is recorded in the stations must be stored in the same
+object. For this reason, you must first create the object (or hydro-meteorological station) and
+then use `hm_build ()`, a method that allows you to automatically load all variables to the object
+that the real world station records.
+
+```{r build, eval=FALSE, fig.width = 6, fig.height = 4}
+# in this path you will find the raw example data 
+path <- system.file('extdata', package = 'hydrotoolbox')
+
+list.files(path)
+
+# we load in a single object (hydromet_station class)
+# the streamflow and water height series
+guido <- 
+  hm_create() %>% # create the met-station
+  hm_build(bureau = 'snih', path = path,
+           file_name = c('snih_hq_guido.xlsx',
+           'snih_qd_guido.xlsx'),
+           slot_name = c('hq', 'qd'),
+           by = c('none', 'day') ) 
+
+# we can explore the data-set inside it by using hm_show
+guido %>% hm_show()
+
+# you can also rename the column names
+guido <- 
+  guido %>% 
+  hm_name(slot_name = 'qd',
+        col_name = 'q(m3/s)')
+
+guido %>% hm_show(slot_name = 'qd')
+```
+
+## Data visualization
+
+Una de las herramientas más útiles para analizar series hidrológicas y sintetizar 
+resultados son los gráficos. En esta sección muestro cómo emplear `hm_plot()`, método 
+que permite graficar series de tiempo de forma estática y dinámica a través de argumentos
+intuitivos y por lo tanto sencillos de aplicar. 
+`hm_plot()` usa internamente parte de la funcionalidad de los paquetes `ggplot2` y `plotly`.
+
+***
+
+One of the most useful tools to analyze hydrological series and synthesize
+results are graphics. In this section I show how to use `hm_plot ()`, a method that allows
+to plot time series statically and dynamically through intuitive arguments.
+`hm_plot ()` uses some of the functionality of the `ggplot2` and `plotly` packages.
+
+```{r plot_1, eval=FALSE, fig.width = 6, fig.height = 4, warning = FALSE}
+# we ask hydrotolkit to show all the variables 
+# with data in our station
+guido %>% hm_show()
+
+# if want to analyze the daily mean streamflow records
+guido %>%
+  hm_plot(slot_name = 'qd',
+          col_name = list('q(m3/s)'),
+          interactive = TRUE,
+          line_color = 'dodgerblue', 
+          x_lab = 'Date', y_lab = 'Q(m3/s)' )
+```
+
+```{r plot_2, eval=FALSE, fig.width = 6, fig.height = 4, warning = FALSE}
+# just show the discharge for the hydrological year 2016/2017
+# for publishing
+guido %>%
+  hm_plot(slot_name = 'qd',
+          col_name = list('q(m3/s)'),
+          interactive = FALSE,
+          line_color = 'dodgerblue', 
+          x_lab = 'Date', y_lab = 'Q(m3/s)', 
+          from = '2016-07-01', to = '2017-06-30', 
+          legend_lab = 'Guido station',
+          title_lab = 'Daily mean discharge' )
+```
+
+## Access to met-satation information
+
+En esta sección muestro cómo usar los métodos `hm_show()`, `hm_report()` y  `hm_get()`. Éstos
+sirven para obtener información cuantitativa acerca de los datos y para extraer las tablas
+de la estación.
+
+***
+
+In this section I show how to use the `hm_show()`, `hm_report()` and `hm_get()` methods. They 
+are used to obtain quantitative information about the data and to extract out of the `hydromet_station` object the `data.frames`.
+
+```{r show, eval=FALSE, fig.width = 6, fig.height = 4, warning = FALSE}
+# the show method allows to get an idea about the stored variables
+guido %>%
+  hm_show()
+
+# or maybe we want to specify the slots
+guido %>%
+  hm_show(slot_name = c('id', 'qd', 'tair') )
+```
+
+```{r report, eval=FALSE, fig.width = 6, fig.height = 4, warning = FALSE}
+# suppose that to get an idea about the basic statistics of our data
+# and we want to know how many missing data we have
+guido %>%
+  hm_report(slot_name = 'qd')
+```
+
+```{r get, eval=FALSE, fig.width = 6, fig.height = 4, warning = FALSE}
+# now you want to extract the table 
+guido %>%
+  hm_get(slot_name = 'qd') %>%
+  head()
+```
+
+## Data transformation
+
+Como menciono en los principios de diseño del paquete, las modificaciones se deben poder almacenar
+en el mismo archivo con el fin de evitar las múltiples vesiones. En esta sección vamos a ver
+algunos ejemplos en el uso de los métodos `hm_mutate()` y `hm_melt()`.
+
+***
+
+As I mention in the package design principles, modifications must be able to be stored
+in the same file, in order to avoid the multiple versioning issue. In this section we will see
+some examples with `hm_mutate()` and `hm_melt()` methods.
+
+```{r mutate, eval=FALSE, eval=FALSE, fig.width = 6, fig.height = 4, warning = FALSE}
+# apply a moving average windows to streamflow records
+guido %>%
+  hm_mutate(slot_name = 'qd',
+            FUN = mov_avg, k = 10,
+            pos = 'c', out_name = 'mov_avg') %>% # see ?mov_avg()
+  hm_plot(slot_name = 'qd',
+         col_name = list(c('q(m3/s)', 'mov_avg') ),
+         interactive = TRUE,
+         line_color = c('dodgerblue', 'red3'),
+         y_lab = 'Q(m3/s)',
+         legend_lab = c('obs', 'mov_avg')  )
+```
+
+> NOTE: hm_mutate() can also be combined with the dplyr package function mutate().
+
+```{r melt, eval=FALSE, fig.width = 6, fig.height = 4, warning = FALSE}
+# lets say that we want to put together snow water equivalent from Toscas (dgi)
+# and daily streamflow discharge from Guido (snih)
+
+# on the first place we build the Toscas station
+# dgi file
+toscas <-
+  hm_create() %>%
+  hm_build(bureau = 'dgi', path = path,
+           file_name = 'dgi_toscas.xlsx',
+           slot_name = c('swe', 'tmax',
+           'tmin', 'tmean', 'rh', 'patm'),
+           by = 'day',
+           out_name = c('swe', 'tmax',
+           'tmin', 'tmean', 'rh', 'patm') )
+
+# now we melt the required data in a new object
+hm_create(class_name = 'compact') %>%
+     hm_melt(melt = c('toscas', 'guido'),
+             slot_name = list(toscas = 'swe', guido = 'qd'),
+             col_name = 'all',
+             out_name = c('swe(mm)', 'qd(m3/s)')
+             ) %>%
+       hm_plot(slot_name = 'compact',
+               col_name = list( c('swe(mm)', 'qd(m3/s)') ),
+               interactive = TRUE,
+               legend_lab = c('swe-Toscas', 'qd-Guido'),
+               line_color = c('dodgerblue', 'red'),
+               y_lab = c('q(m3/s)', 'swe(mm)'),
+               dual_yaxis = c('right', 'left')
+                )
+```
