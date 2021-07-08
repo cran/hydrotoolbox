@@ -2,7 +2,7 @@ Package: hydrotoolbox
 Type: Package
 Title: Hydrological Tools for Handling Hydro-Meteorological Data
         Records
-Version: 1.0.0
+Version: 1.0.1
 Date: 2021-07-01
 Author: Ezequiel Toum <etoum@mendoza-conicet.gob.ar>
 Maintainer: Ezequiel Toum <etoum@mendoza-conicet.gob.ar>
@@ -20,6 +20,6 @@ LinkingTo: Rcpp
 Suggests: testthat, knitr, rmarkdown
 VignetteBuilder: knitr
 NeedsCompilation: yes
-Packaged: 2021-07-07 13:38:34 UTC; ezequiel
+Packaged: 2021-07-08 16:11:20 UTC; ezequiel
 Repository: CRAN
-Date/Publication: 2021-07-08 07:40:02 UTC
+Date/Publication: 2021-07-08 21:50:02 UTC

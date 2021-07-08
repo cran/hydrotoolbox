@@ -5,6 +5,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // col_first
 NumericVector col_first(NumericMatrix x, int allow_na);
 RcppExport SEXP _hydrotoolbox_col_first(SEXP xSEXP, SEXP allow_naSEXP) {

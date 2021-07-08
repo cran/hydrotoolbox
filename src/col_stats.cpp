@@ -30,22 +30,22 @@ NumericVector col_stats_cpp(NumericMatrix x, std::string stats, double allow_na)
   NumericVector out(n_col);
 
   if(stats == "sum"){
-    out = col_sum(x = x, allow_na = allow_na);
+    out = col_sum(x, allow_na);
 
   } else if( stats == "max"){
-    out = col_max(x = x, allow_na = allow_na);
+    out = col_max(x, allow_na);
 
   } else if( stats == "min"){
-    out = col_min(x = x, allow_na = allow_na);
+    out = col_min(x, allow_na);
 
   } else if( stats == "mean"){
-    out = col_mean(x = x, allow_na = allow_na);
+    out = col_mean(x, allow_na);
 
   } else if(stats == "first"){
-    out = col_first(x = x, allow_na = allow_na);
+    out = col_first(x, allow_na);
 
   } else if(stats == "last"){
-    out = col_last(x = x, allow_na = allow_na);
+    out = col_last(x, allow_na);
 
   }
 
