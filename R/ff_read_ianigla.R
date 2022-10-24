@@ -44,24 +44,35 @@
 #'                            'kin(kW/m2)', 'hsnow(cm)', 'tsoil(°C)' ) )
 #' )
 #'
-read_ianigla <- function(path, by = '1 hour', out_name = NULL){
-  #**************************
+read_ianigla <- function(path,
+                         by = '1 hour',
+                         out_name = NULL){
+  #*++++++++++++++++++
   #* conditionals
-  #**************************
+  #*++++++++++++++++++
   #* path
-  check_class(argument = path, target = 'character', arg_name = 'path')
+  check_class(argument = path,
+              target = 'character',
+              arg_name = 'path')
 
   #* by
-  check_class(argument = by, target = 'character', arg_name = 'by')
-  check_length(argument = by, max_allow = 1, arg_name = 'by')
+  check_class(argument = by,
+              target = 'character',
+              arg_name = 'by')
+
+  check_length(argument = by,
+               max_allow = 1,
+               arg_name = 'by')
 
   #* out_name
-  check_class(argument = out_name, target = 'character', arg_name = 'out_name')
+  check_class(argument = out_name,
+              target = 'character',
+              arg_name = 'out_name')
 
 
-  #**************************
+  #*++++++++++++++++++
   #* function
-  #**************************
+  #*++++++++++++++++++
   #* read the file
   Est <- YJday <- hh.mm.ss <- bat.Volts <- NULL # just for binding
 

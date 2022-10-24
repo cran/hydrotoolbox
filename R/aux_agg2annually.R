@@ -12,13 +12,18 @@
 #' @export
 #' @keywords internal
 #'
-agg2annually <- function(df, col_name, fun, allow_na = 0, start_month = 1, end_month = 12){
+agg2annually <- function(df,
+                         col_name,
+                         fun,
+                         allow_na = 0,
+                         start_month = 1,
+                         end_month = 12){
   # set date format
   date_format <- '%Y-%m'
 
   # extract date series with the new format
-  date_agg    <- format(df[ , 1], format = date_format)
-  year_agg    <- format(df[ , 1], format = '%Y')
+  date_agg    <- format(df[ , 1, drop = TRUE], format = date_format)
+  year_agg    <- format(df[ , 1, drop = TRUE], format = '%Y')
 
   # convert to unique
   date_unique <- unique(date_agg) # sort()?
@@ -113,7 +118,9 @@ agg2annually <- function(df, col_name, fun, allow_na = 0, start_month = 1, end_m
   } # end for i loop
 
 
-  return( data.frame(begin = begin_vect, end = end_vect, mat_out) )
+  return( data.frame(begin = begin_vect, end = end_vect, mat_out) %>%
+            as_tibble()
+          )
 
 
 } # end function

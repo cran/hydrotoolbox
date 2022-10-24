@@ -22,7 +22,7 @@
 #' @export
 #'
 #' @examples
-#'
+#' \dontrun{
 #' # set path to file
 #' path_file <- system.file('extdata', 'ianigla_cuevas.csv',
 #'              package = 'hydrotoolbox')
@@ -41,6 +41,7 @@
 #'
 #' # now extract the slot of air temperature
 #' head( hm_get(obj = hm_cuevas, slot_name = 'tair') )
+#'}
 #'
 setGeneric(name = 'hm_get',
            def = function(obj, slot_name = NA_character_)
@@ -90,14 +91,23 @@ setMethod(f = 'hm_get',
             #* conditionals
             #**************************
             #* check for classes
-            check_class(argument = obj, target = 'hydromet_station', arg_name = 'obj')
-            check_class(argument = slot_name, target = 'character', arg_name = 'slot_name')
+            check_class(argument = obj,
+                        target = 'hydromet_station',
+                        arg_name = 'obj')
+
+            check_class(argument = slot_name,
+                        target = 'character',
+                        arg_name = 'slot_name')
 
             #* check for argument consistency
-            check_string(argument = slot_name, target = slotNames(obj), arg_name = 'slot_name')
+            check_string(argument = slot_name,
+                         target = slotNames(obj),
+                         arg_name = 'slot_name')
 
             #* check for length
-            check_length(argument = slot_name, max_allow = 1, arg_name = 'slot_name')
+            check_length(argument = slot_name,
+                         max_allow = 1,
+                         arg_name = 'slot_name')
 
 
             #**************************
@@ -121,14 +131,23 @@ setMethod(f = 'hm_get',
             #* conditionals
             #**************************
             #* check for classes
-            check_class(argument = obj, target = 'hydromet_compact', arg_name = 'obj')
-            check_class(argument = slot_name, target = 'character', arg_name = 'slot_name')
+            check_class(argument = obj,
+                        target = 'hydromet_compact',
+                        arg_name = 'obj')
+
+            check_class(argument = slot_name,
+                        target = 'character',
+                        arg_name = 'slot_name')
 
             #* check for argument consistency
-            check_string(argument = slot_name, target = slotNames(obj), arg_name = 'slot_name')
+            check_string(argument = slot_name,
+                         target = slotNames(obj),
+                         arg_name = 'slot_name')
 
             #* check for length
-            check_length(argument = slot_name, max_allow = 1, arg_name = 'slot_name')
+            check_length(argument = slot_name,
+                         max_allow = 1,
+                         arg_name = 'slot_name')
 
 
             #**************************

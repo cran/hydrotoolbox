@@ -95,14 +95,14 @@ that the package provides. In the following sections I will show you how to use 
 
 Como menciono en los principios de diseño de este paquete (`vignette('package_overview', package = 'hydrotoolbox')`), los datos que se registran en las estaciones deben almacenarse en un mismo
 objeto. Por ello primero habrá que crear dicho objeto (o estación hidro-meteorológica) y luego
-usar `hm_build()`, un método que permite cargar automáticamente al objeto todas las variables
+usar `hm_build_generic()`, un método que permite cargar automáticamente al objeto todas las variables
 que la estación real registra. 
 
 ***
 
 As I mentioned in the design principles of this package (`vignette ('package_overview', package = 'hydrotoolbox')`), the data that is recorded in the stations must be stored in the same
 object. For this reason, you must first create the object (or hydro-meteorological station) and
-then use `hm_build ()`, a method that allows you to automatically load all variables to the object
+then use `hm_build_generic()`, a method that allows you to automatically load all variables to the object
 that the real world station records.
 
 ```{r build, eval=FALSE, fig.width = 6, fig.height = 4}
@@ -115,11 +115,13 @@ list.files(path)
 # the streamflow and water height series
 guido <- 
   hm_create() %>% # create the met-station
-  hm_build(bureau = 'snih', path = path,
-           file_name = c('snih_hq_guido.xlsx',
-           'snih_qd_guido.xlsx'),
-           slot_name = c('hq', 'qd'),
-           by = c('none', 'day') ) 
+  hm_build_generic(path = path,
+                   file_name = c('snih_qd_guido.xlsx'),
+                   slot_name = c('qd'),
+                   FUN = read_excel, 
+                   by = c('day'),
+                   sheet = 1L
+                   ) 
 
 # we can explore the data-set inside it by using hm_show
 guido %>% hm_show()
@@ -245,15 +247,16 @@ guido %>%
 
 # on the first place we build the Toscas station
 # dgi file
-toscas <-
+toscas <- 
   hm_create() %>%
-  hm_build(bureau = 'dgi', path = path,
-           file_name = 'dgi_toscas.xlsx',
-           slot_name = c('swe', 'tmax',
-           'tmin', 'tmean', 'rh', 'patm'),
-           by = 'day',
-           out_name = c('swe', 'tmax',
-           'tmin', 'tmean', 'rh', 'patm') )
+  hm_build_generic(path = path,
+                   file_name = 'dgi_toscas.xlsx',
+                   slot_name = c('swe', 'tmax',
+                                 'tmin', 'tmean',
+                                 'rh', 'patm'),
+                   by = 'day', 
+                   FUN = read_dgi, 
+                   sheet = 1L:6L ) 
 
 # now we melt the required data in a new object
 hm_create(class_name = 'compact') %>%

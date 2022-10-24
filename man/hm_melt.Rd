@@ -42,15 +42,15 @@ This method allows you merge several tables (inside \code{hydromet_station} and/
 }
 \section{Functions}{
 \itemize{
-\item \code{hm_melt,hydromet_compact-method}: plot method for compact class
-}}
+\item \code{hm_melt(hydromet_compact)}: plot method for compact class
 
+}}
 \note{
 Remember that all the chosen variables should have the same temporal resolution.
 The method itself will not warn you about bad entries.
 }
 \examples{
-
+\dontrun{
 # lets say that we want to put together snow water equivalent from Toscas (dgi)
 # and daily streamflow discharge from Guido (snih)
 
@@ -92,7 +92,7 @@ hm_create(class_name = 'compact') \%>\%
                y_lab = c('q(m3/s)', 'swe(mm)'),
                dual_yaxis = c('right', 'left')
                 )
-
+}
 
 
 }

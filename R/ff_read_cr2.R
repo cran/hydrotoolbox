@@ -42,26 +42,41 @@
 #' head( read_cr2(path = path_tmax, out_name = 'tmax(°C)') )
 #'
 read_cr2 <- function(path, by = 'day', out_name = NULL){
-  #**************************
+  #*++++++++++++++++++
   #* conditionals
-  #**************************
+  #*++++++++++++++++++
   #* path
-  check_class(argument = path, target = 'character', arg_name = 'path')
+  check_class(argument = path,
+              target = 'character',
+              arg_name = 'path')
 
   #* by
-  check_class(argument = by, target = 'character', arg_name = 'by')
-  check_string(argument = by, target = 'day', arg_name = 'by')
-  check_length(argument = by, max_allow = 1, arg_name = 'by')
+  check_class(argument = by,
+              target = 'character',
+              arg_name = 'by')
+
+  check_string(argument = by,
+               target = 'day',
+               arg_name = 'by')
+
+  check_length(argument = by,
+               max_allow = 1,
+               arg_name = 'by')
 
   #* out_name
-  check_class(argument = out_name, target = 'character', arg_name = 'out_name')
+  check_class(argument = out_name,
+              target = 'character',
+              arg_name = 'out_name')
 
 
-  #**************************
+  #*++++++++++++++++++
   #* function
-  #**************************
+  #*++++++++++++++++++
   #* read the file
-  table_cr2 <- read.csv(file = path, header = TRUE, sep = ',', dec = '.')
+  table_cr2 <- read.csv(file = path,
+                        header = TRUE,
+                        sep = ',',
+                        dec = '.')
 
   #* get date
   year  <- table_cr2[ , 1]

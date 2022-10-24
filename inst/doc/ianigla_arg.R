@@ -30,14 +30,17 @@ library(hydrotoolbox)
 #  # ianigla file
 #  cuevas <-
 #    hm_create() %>%
-#    hm_build(bureau = 'ianigla', path = path,
-#             file_name = 'ianigla_cuevas.csv',
-#             slot_name = c('tair', 'rh', 'patm',
-#                           'precip', 'wspd', 'wdir',
-#                           'kin', 'hsnow', 'tsoil'),
-#             by = 'hour',
-#             out_name = c('tair(°C)', 'rh(%)', 'patm(mbar)',
-#                          'p(mm)', 'wspd(km/hr)', 'wdir(°)',
-#                          'kin(kW/m2)', 'hsnow(cm)', 'tsoil(°C)' )
-#            )
+#    hm_build_generic(path = path,
+#                     file_name = 'ianigla_cuevas.csv',
+#                     slot_name = c('tair', 'rh', 'patm',
+#                                   'precip', 'wspd', 'wdir',
+#                                   'kin', 'hsnow', 'tsoil'),
+#                     by = 'hour',
+#                     out_name = list('tair(°C)', 'rh(%)',
+#                                     'patm(mbar)', 'p(mm)',
+#                                     'wspd(km/hr)', 'wdir(°)',
+#                                     'kin(kW/m2)', 'hsnow(cm)',
+#                                     'tsoil(°C)' ),
+#                     FUN = read_ianigla
+#                     )
 

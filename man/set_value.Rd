@@ -7,26 +7,27 @@
 set_value(x, col_name, out_name = NULL, value, from, to)
 }
 \arguments{
-\item{x}{data frame with class \code{Date} or \code{POSIXct} in the first column and
-numeric on the others.}
+\item{x}{data frame or tibble with class \code{Date} or \code{POSIX*}
+in the first column.}
 
 \item{col_name}{string with column(s) name(s) to set.}
 
-\item{out_name}{optional. String with new column(s) name(s). If you set it as \code{NULL}, the
-function will overwrite the original data frame.}
+\item{out_name}{optional. String with new column(s) name(s). If you set it
+as \code{NULL}, the function will overwrite the original data frame.}
 
-\item{value}{numeric vector with the numeric values to set between dates (\code{from} and
-\code{to}). If you provide a number it will be recycled. When using a multiple dates (i.e.:
-'date' vector in \code{from} and \code{to}) use a list with a numeric vector inside each element.}
+\item{value}{numeric vector with the numeric values to set between
+dates (\code{from} and \code{to}). If you provide a number it will be
+recycled. When using a multiple dates (i.e.: "date" vector in \code{from}
+and \code{to}) use a list with a numeric vector inside each element.}
 
-\item{from}{string vector for \code{'Date'} class or \code{POSIXct} class for date-time data
-with the starting \code{Date}.}
+\item{from}{string vector for \code{'Date'} class or \code{POSIX*} class
+for date-time data with the starting date.}
 
-\item{to}{string vector for \code{'Date'} class or \code{POSIXct} class for date-time data
-with the ending \code{Date}.}
+\item{to}{string vector for \code{'Date'} class or \code{POSIX*} class
+for date-time data with the ending date.}
 }
 \value{
-The same data frame but with the set numeric values between the dates.
+The same table but with the set numeric values between the dates.
 }
 \description{
 Specify specific values between dates.

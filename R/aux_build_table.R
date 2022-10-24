@@ -13,7 +13,11 @@
 #'
 #' @keywords internal
 #'
-build_table <- function(hm_obj, slot_name, col_name, from = NULL, to = NULL){
+build_table <- function(hm_obj,
+                        slot_name,
+                        col_name,
+                        from = NULL,
+                        to = NULL){
 
   # loop in the slots
   n_slot <- length(slot_name)
@@ -30,7 +34,9 @@ build_table <- function(hm_obj, slot_name, col_name, from = NULL, to = NULL){
         hm_get(obj = hm_obj, slot_name = slot_name[i]) %>%
         subset(select = c( 'date', col_name[[i]] ) )
 
-      final_table <- merge(x = final_table, y = next_table, all.x = TRUE)
+      final_table <- merge(x = final_table,
+                           y = next_table,
+                           all.x = TRUE)
 
       rm(next_table)
 
@@ -39,6 +45,18 @@ build_table <- function(hm_obj, slot_name, col_name, from = NULL, to = NULL){
 
 
   }
+
+  # check that final_table contains numerics!
+  col_classes <-
+    final_table %>%
+    sapply(class) %>%
+    unlist() %>%
+    setdiff(y = c("Date", "POSIXct", "POSIXt", "POSIXlt"))
+
+  check_string(argument = col_classes,
+               target = "numeric",
+               arg_name = "col_name")# check that final_table contains numerics!
+
 
   # subset by date
   date <- NULL # to avoid compilation issues
@@ -60,6 +78,6 @@ build_table <- function(hm_obj, slot_name, col_name, from = NULL, to = NULL){
   }
 
   # return table
-  return(out_table)
+  return(out_table %>% as.data.frame())
 
 }

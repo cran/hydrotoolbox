@@ -7,19 +7,21 @@
 rm_spike(x, col_name, out_name = NULL, tolerance)
 }
 \arguments{
-\item{x}{data frame with class Date in the first column and
-numeric on the others.}
+\item{x}{data frame or tibble with class Date or POSIX*
+in the first column.}
 
 \item{col_name}{string with column(s) name(s) where to apply the function.}
 
-\item{out_name}{optional. String with new column(s) name(s). If you set it as \code{NULL},
-the function will overwrite the original data frame.}
+\item{out_name}{optional. String with new column(s) name(s).
+If you set it as \code{NULL}, the function will overwrite the
+original table.}
 
-\item{tolerance}{numeric vector with the maximum tolerance between a number and its successor.
-If you provide a single value it will be recycled.}
+\item{tolerance}{numeric vector with the maximum tolerance between
+a number and its successor. If you provide a single value it will
+be recycled.}
 }
 \value{
-The same data frame but with the peaks removed.
+The same table but with the peaks removed.
 }
 \description{
 Remove spikes and set their value as \code{NA_real_}.

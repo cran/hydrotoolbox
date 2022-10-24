@@ -10,7 +10,8 @@
 #
 #' Aggregates a data frame to a larger time period
 #'
-#' @param x data frame with class \code{Date} or \code{POSIXct} in the first column.
+#' @param x data frame or tibble with class \code{Date} or \code{POSIX*}
+#'  in the first column.
 #' @param col_name string with column(s) name(s) to aggregate.
 #' @param fun string with supported aggregation function name (one per \option{col_name}):
 #' \option{mean}, \option{min}, \option{max}, \option{sum}, \option{last} or \option{first}.
@@ -69,42 +70,102 @@
 #'
 agg_table <- function(x, col_name, fun, period, out_name = NULL,
                       allow_na = 0, start_month = 1, end_month = 12){
-  #**************************
+
+  #*///////////////////
   #* conditionals
-  #**************************
+  #*///////////////////
   #* check for classes
-  check_class(argument = x, target = 'data.frame', arg_name = 'x')
-  check_class(argument = x[ , 1], target = c('Date', 'POSIXct'), arg_name = 'x[ , 1]' )
-  check_class(argument = c( as.matrix( x[ , -1] ) ), target = 'numeric', arg_name = 'x[ , -1]' )
-  check_class(argument = col_name, target = 'character', arg_name = 'col_name')
-  check_class(argument = fun, target = 'character', arg_name = 'fun')
-  check_class(argument = period, target = 'character', arg_name = 'period')
+  check_class(argument = x,
+              target = c("tbl_df", "tbl", "data.frame"),
+              arg_name = 'x')
+
+  check_class(argument = x[ , 1, drop = TRUE],
+              target = c("Date", "POSIXct", "POSIXlt"),
+              arg_name = 'x[ , 1]')
+
+  #check_class(argument = c( as.matrix( x[ , -1] ) ), target = 'numeric', arg_name = 'x[ , -1]' )
+
+  check_class(argument = col_name,
+              target = 'character',
+              arg_name = 'col_name')
+
+  check_class(argument = fun,
+              target = 'character',
+              arg_name = 'fun')
+
+  check_class(argument = period,
+              target = 'character',
+              arg_name = 'period')
+
   if( !is.null(out_name) ){
-    check_class(argument = out_name, target = 'character', arg_name = 'out_name')
+    check_class(argument = out_name,
+                target = 'character',
+                arg_name = 'out_name')
   }
-  check_class(argument = allow_na, target = 'numeric', arg_name = 'allow_na')
+
+  check_class(argument = allow_na,
+              target = 'numeric',
+              arg_name = 'allow_na')
+
   if(is.na(allow_na)){stop( 'allow_na argument cannot be a NA value', call. = FALSE )}
-  check_class(argument = start_month, target = 'numeric', arg_name = 'start_month')
-  check_class(argument = end_month, target = 'numeric', arg_name = 'end_month')
+
+  check_class(argument = start_month,
+              target = 'numeric',
+              arg_name = 'start_month')
+
+  check_class(argument = end_month,
+              target = 'numeric',
+              arg_name = 'end_month')
 
 
   #* check for arguments consistency
-  check_string(argument = col_name, target = colnames(x[ , -1, drop = FALSE]), arg_name = 'col_name' )
-  check_string(argument = fun, target = c('mean', 'min', 'max', 'sum', 'last', 'first'), arg_name = 'fun')
-  check_string(argument = period, target = c('hourly', 'daily', 'monthly', 'annually', 'climatic'), arg_name = 'period')
-  check_numeric(argument = start_month, target = 1:12, arg_name = 'start_month')
-  check_numeric(argument = end_month, target = 1:12, arg_name = 'end_month')
+  check_string(argument = col_name,
+               target = colnames(x[ , -1, drop = FALSE]),
+               arg_name = 'col_name' )
+
+  check_string(argument = fun,
+               target = c('mean', 'min', 'max', 'sum', 'last', 'first'),
+               arg_name = 'fun')
+
+  check_string(argument = period,
+               target = c('hourly', 'daily', 'monthly',
+                          'annually', 'climatic'),
+               arg_name = 'period')
+
+  check_numeric(argument = start_month,
+                target = 1:12,
+                arg_name = 'start_month')
+
+  check_numeric(argument = end_month,
+                target = 1:12,
+                arg_name = 'end_month')
 
   #* check for arguments length
-  check_length(argument = period, max_allow = 1, arg_name = 'period')
-  check_length(argument = allow_na, max_allow = 1, arg_name = 'allow_na')
-  check_length(argument = start_month, max_allow = 1, arg_name = 'start_month')
-  check_length(argument = end_month, max_allow = 1, arg_name = 'end_month')
+  check_length(argument = period,
+               max_allow = 1,
+               arg_name = 'period')
+
+  check_length(argument = allow_na,
+               max_allow = 1,
+               arg_name = 'allow_na')
+
+  check_length(argument = start_month,
+               max_allow = 1,
+               arg_name = 'start_month')
+
+  check_length(argument = end_month,
+               max_allow = 1,
+               arg_name = 'end_month')
 
   #* cross validation
-  check_cross(ref_arg = col_name, eval_arg = fun, arg_names = c('col_name', 'fun'))
-  if( !is.null(out_name) ){
-    check_cross(ref_arg = col_name, eval_arg = out_name, arg_names = c('col_name', 'out_name'))
+  check_cross(ref_arg = col_name,
+              eval_arg = fun,
+              arg_names = c('col_name', 'fun'))
+
+   if( !is.null(out_name) ){
+    check_cross(ref_arg = col_name,
+                eval_arg = out_name,
+                arg_names = c('col_name', 'out_name'))
   }
 
   #* miscellaneous
@@ -121,24 +182,29 @@ agg_table <- function(x, col_name, fun, period, out_name = NULL,
   }
 
 
-  #**************************
+  #*///////////////////
   #* function
-  #**************************
+  #*///////////////////
   if(period == 'hourly'){
-    out <- agg2hourly(df = x, col_name = col_name, fun = fun, allow_na = allow_na)
+    out <- agg2hourly(df = x, col_name = col_name,
+                      fun = fun, allow_na = allow_na)
 
   } else if(period == 'daily'){
-    out <- agg2daily(df = x, col_name = col_name, fun = fun, allow_na = allow_na)
+    out <- agg2daily(df = x, col_name = col_name,
+                     fun = fun, allow_na = allow_na)
 
   } else if(period == 'monthly'){
-    out <- agg2monthly(df = x, col_name = col_name, fun = fun, allow_na = allow_na)
+    out <- agg2monthly(df = x, col_name = col_name,
+                       fun = fun, allow_na = allow_na)
 
   } else if(period == 'annually'){
-    out <- agg2annually(df = x, col_name = col_name, fun = fun, allow_na = allow_na,
+    out <- agg2annually(df = x, col_name = col_name,
+                        fun = fun, allow_na = allow_na,
                         start_month = start_month, end_month = end_month)
 
   } else if(period == 'climatic'){
-    out <- agg2climatic(df = x, col_name = col_name, fun = fun, allow_na = allow_na,
+    out <- agg2climatic(df = x, col_name = col_name,
+                        fun = fun, allow_na = allow_na,
                         start_month = start_month, end_month = end_month)
 
   }

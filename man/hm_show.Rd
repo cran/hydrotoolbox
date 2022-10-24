@@ -32,15 +32,15 @@ This method shows the 'head' or 'tail' of a specific slot.
 }
 \section{Functions}{
 \itemize{
-\item \code{hm_show,hydromet-method}: plot method for hydromet class
+\item \code{hm_show(hydromet)}: print method for hydromet class
 
-\item \code{hm_show,hydromet_station-method}: plot method for station class
+\item \code{hm_show(hydromet_station)}: print method for station class
 
-\item \code{hm_show,hydromet_compact-method}: plot method for compact class
+\item \code{hm_show(hydromet_compact)}: print method for compact class
+
 }}
-
 \examples{
-
+\dontrun{
 # lets work with the cuevas station
 path <- system.file('extdata', package = 'hydrotoolbox')
 
@@ -70,5 +70,6 @@ hm_show(obj = hm_cuevas, slot_name = 'empty')
 # focus on specific slots
 hm_show(obj = hm_cuevas, slot_name = c('kin', 'rh') )
 hm_show(obj = hm_cuevas, slot_name = c('kin', 'rh'), show = 'tail' )
+}
 
 }

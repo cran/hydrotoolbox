@@ -35,31 +35,50 @@
 #'
 #' # This files are provided by AIC under legal agreement only.
 #'
-read_aic <- function(path, by = 'day', out_name = NULL,
-                     sheet = NULL, skip = 12, get_sheet = FALSE){
-  #**************************
+read_aic <- function(path,
+                     by = 'day',
+                     out_name = NULL,
+                     sheet = NULL,
+                     skip = 12,
+                     get_sheet = FALSE){
+  #*++++++++++++++++++
   #* conditionals
-  #**************************
+  #*++++++++++++++++++
   #* path
-  check_class(argument = path, target = 'character', arg_name = 'path')
+  check_class(argument = path,
+              target = 'character',
+              arg_name = 'path')
 
   #* by
-  check_class(argument = by, target = 'character', arg_name = 'by')
-  check_length(argument = by, max_allow = 1, arg_name = 'by')
+  check_class(argument = by,
+              target = 'character',
+              arg_name = 'by')
+
+  check_length(argument = by,
+               max_allow = 1,
+               arg_name = 'by')
 
   #* out_name
-  check_class(argument = out_name, target = 'character', arg_name = 'out_name')
+  check_class(argument = out_name,
+              target = 'character',
+              arg_name = 'out_name')
 
   #* get_sheet
-  check_class(argument = get_sheet, target = 'logical', arg_name = 'get_sheet')
+  check_class(argument = get_sheet,
+              target = 'logical',
+              arg_name = 'get_sheet')
+
   check_string(argument = as.character(get_sheet),
                target = c('TRUE', 'FALSE', 'T', 'F'),
                arg_name = 'get_sheet' )
-  check_length(argument = get_sheet, max_allow = 1, arg_name = 'get_sheet')
 
-  #**************************
+  check_length(argument = get_sheet,
+               max_allow = 1,
+               arg_name = 'get_sheet')
+
+  #*++++++++++++++++++
   #* function
-  #**************************
+  #*++++++++++++++++++
   #* wondering excel sheet names?
   if(get_sheet == TRUE){
     #* return excel sheets names

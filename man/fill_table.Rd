@@ -2,23 +2,25 @@
 % Please edit documentation in R/ff_fill_table.R
 \name{fill_table}
 \alias{fill_table}
-\title{Find non-reported dates and fill them with \code{NA_real_}}
+\title{Find non-reported dates and fill them with \code{NA_*}}
 \usage{
 fill_table(x, col_name = "all", by = NULL)
 }
 \arguments{
-\item{x}{data frame with class \code{Date} or \code{POSIXct} in the first column.}
+\item{x}{data frame (or tibble) with class \code{Date} or \code{POSIX*}
+in the first column.}
 
 \item{col_name}{string with column(s) name(s) to fill.}
 
-\item{by}{string with a valid time step (e.g.: \code{'month', 'day', '6 hour', '3 hour',
-'1 hour', '15 min' }).}
+\item{by}{string with a valid time step (e.g.: \code{"month",
+"day", "6 hour", "3 hour", "1 hour", "15 min"}).}
 }
 \value{
-A data frame with the date and the filled numeric variable(s).
+A data frame (or tibble) with the date and the filled numeric variable(s).
 }
 \description{
-Automatically finds non recorded date periods and fills them with \code{NA_real_} values.
+Automatically finds non recorded date periods and fills
+ them with \code{NA_real_} values.
 }
 \examples{
 

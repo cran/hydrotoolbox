@@ -10,16 +10,20 @@
 #
 #' Report \code{NA_real_} values inside a table.
 #'
-#' @description Creates a data frame with reported dates and number of times-step of missing or
-#' not recorded data.
+#' @description Creates a data frame with reported dates and number of
+#' times-step of missing or not recorded data.
 #'
-#' @param x data frame with hydro-meteo data. First column is date and the second the numeric
-#' vector to be reported.
-#' @param col_name string vector with the column(s) name(s) to report. By default the function
-#' will report all numeric columns.
+#' @param x data frame with hydro-meteo data. First column is date and
+#' the second the numeric vector to be reported.
+#' @param col_name string vector with the column(s) name(s) to report.
+#' By default the function will report all numeric columns.
 #'
-#' @return A list containing a data frame (one per \code{col_name}) with three columns:
-#' start-date, end-date and number of missing time steps.
+#' @return A list containing a data frame (one per \code{col_name})
+#' with three columns: start-date, end-date and number of missing
+#' time steps. In the last row of the table you will find the total
+#' number of missing measurements (under "time_step" column). The
+#' "first" and "last" columns will have a \code{NA_character} for
+#' this last row.
 #'
 #' @export
 #'
@@ -41,14 +45,21 @@
 #'
 #'
 report_miss <- function(x, col_name = 'all'){
-  #**************************
+  #*++++++++++++++++++
   #* conditionals
-  #**************************
+  #*++++++++++++++++++
   #* x
-  check_class(argument = x, target = 'data.frame', arg_name = 'x')
-  check_class(argument = x[ , 1], target = c('Date', 'POSIXct'), arg_name = 'x[ , 1]')
-  check_class(argument = c( as.matrix( x[ , -1] ) ),
-              target = 'numeric', arg_name = 'x[ , -1]')
+  check_class(argument = x,
+              target = c("tbl_df", "tbl", "data.frame"),
+              arg_name = 'x')
+
+  check_class(argument = x[ , 1, drop = TRUE],
+              target = c("Date", "POSIXct", "POSIXlt"),
+              arg_name = 'x[ , 1]')
+
+  # queda trabajar sobre este condicional
+  # check_class(argument = c( as.matrix( x[ , -1] ) ),
+  #             target = 'numeric', arg_name = 'x[ , -1]')
 
   #* col_name
   check_class(argument = col_name, target = 'character', arg_name = 'col_name')
@@ -61,9 +72,9 @@ report_miss <- function(x, col_name = 'all'){
                arg_name = 'col_name')
 
 
-  #**************************
+  #*++++++++++++++++++
   #* function
-  #**************************
+  #*++++++++++++++++++
   #* get number of columns to report
   all_names <- colnames(x)[-1]
   if(col_name[1] == 'all'){
@@ -76,8 +87,12 @@ report_miss <- function(x, col_name = 'all'){
   n_it     <- length(col_pos)
   out_list <- list()
   for(i in 1:n_it){
+    check_class(argument = c( x[ , col_pos[i], drop = TRUE] ),
+                target = 'numeric',
+                arg_name = col_name[i])
+
     # get missing data position
-    na_pos <- which( is.na( x[ , col_pos[i] ] ) )
+    na_pos <- which( is.na( x[ , col_pos[i], drop = TRUE ] ) )
 
     # contiguous miss data
     contiguous <- c( 1, diff(na_pos) )
@@ -95,8 +110,8 @@ report_miss <- function(x, col_name = 'all'){
     }
 
     # first and last date
-    first_date <- c( x[start_pos, 1], NA_character_ )
-    last_date  <- c( x[end_pos, 1], NA_character_)
+    first_date <- c( x[start_pos, 1, drop = TRUE], NA_character_ )
+    last_date  <- c( x[end_pos, 1, drop = TRUE], NA_character_)
 
     # time interval
     delta_t <- end_pos - start_pos + 1

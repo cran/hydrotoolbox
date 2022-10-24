@@ -14,15 +14,14 @@
 #' equal than ('>=') or lesser or equal than ('<=') 'threshold' argument are set
 #' to \code{NA_real_}.
 #'
-#' @param x data frame with class Date in the first column and
-#' numeric on the others.
+#' @param x data frame or tibble with class Date or POSIX* in the first column.
 #' @param col_name string with column(s) name(s) where to apply the function.
-#' @param out_name optional. String with new column(s) name(s). If you set it as \code{NULL},
-#' the function will overwrite the original data frame.
+#' @param out_name optional. String with new column(s) name(s). If you set it
+#' as \code{NULL}, the function will overwrite the original table.
 #' @param threshold numeric vector with the threshold value(s).
 #' If you provide a single value it will be recycled among \code{col_name} strings.
-#' @param case string with either '>=' (greater or equal than) or '<=' (lesser or equal than)
-#' symbol. Default string is '>='.
+#' @param case string with either ">=" (greater or equal than) or "<=" (lesser or
+#' equal than) symbol. Default string is ">=".
 #'
 #' @return The same data frame but with the threshold set.
 #'
@@ -48,27 +47,43 @@
 #'
 #'
 set_threshold <- function(x,
-                          col_name, out_name = NULL,
-                          threshold, case = '>='){
-  #**************************
+                          col_name,
+                          out_name = NULL,
+                          threshold,
+                          case = '>='){
+  #*++++++++++++++++++
   #* conditionals
-  #**************************
+  #*++++++++++++++++++
   #* x
-  check_class(argument = x, target = 'data.frame', arg_name = 'x')
-  check_class(argument = x[ , 1], target = c('Date', 'POSIXct') , arg_name = 'x[ , 1]')
-  check_class(argument = c( as.matrix( x[ , -1] ) ),
-              target = c('numeric') , arg_name = 'x[ , -1]')
+  check_class(argument = x,
+              target = c("tbl_df", "tbl", "data.frame"),
+              arg_name = 'x')
+
+  check_class(argument = x[ , 1, drop = TRUE],
+              target = c("Date", "POSIXct", "POSIXlt"),
+              arg_name = 'x[ , 1]')
+
+
 
   #* col_name
-  check_class(argument = col_name, target = 'character', arg_name = 'col_name')
+  check_class(argument = col_name,
+              target = 'character',
+              arg_name = 'col_name')
+
   check_string(argument = col_name,
                target = colnames(x)[-1],
                arg_name = 'col_name')
 
+  check_class(argument = c( as.matrix( x[ , col_name] ) ),
+              target = c('numeric') ,
+              arg_name = 'x[ , col_name]')
+
   #* out_name
   if( !is.null(out_name) ){
 
-    check_class(argument = out_name, target = 'character', arg_name = 'out_name')
+    check_class(argument = out_name,
+                target = 'character',
+                arg_name = 'out_name')
 
     guess <- which( match(x = out_name, table = colnames(x) ) >= 1 )
     if( length(guess) != 0){
@@ -91,7 +106,10 @@ set_threshold <- function(x,
 
   #* threshold
   n_it <- length(col_name)
-  check_class(argument = threshold, target = c('numeric'), arg_name = 'threshold')
+  check_class(argument = threshold,
+              target = c('numeric'),
+              arg_name = 'threshold')
+
   if( n_it > 1 & length(threshold == 1) ){
 
     threshold <- rep(threshold, n_it)
@@ -104,22 +122,26 @@ set_threshold <- function(x,
   }
 
   #* case
-  check_class(argument = case, target = c('character'), arg_name = 'case')
+  check_class(argument = case,
+              target = c('character'),
+              arg_name = 'case')
+
   if( n_it > 1 & length(case == 1) ){
 
     case <- rep(case, n_it)
 
   } else {
 
-    check_cross(ref_arg = col_name, eval_arg = case,
+    check_cross(ref_arg = col_name,
+                eval_arg = case,
                 arg_names = c('col_name', 'case') )
 
   }
 
 
-  #**************************
+  #*+++++++++++++++
   #* function
-  #**************************
+  #*+++++++++++++++
   # get matrix
   mat_target <-
     x[ , col_name, drop = FALSE] %>%
@@ -159,13 +181,13 @@ set_threshold <- function(x,
     #* use out_name
     colnames(mat_thr) <- out_name
 
-    df_out <- x
+    df_out <- x %>% as.data.frame() # avoid issues with tibble
     df_out[ , out_name] <- mat_thr
 
   } else {
     #* overwrite existing data frame
 
-    df_out <- x
+    df_out <- x %>% as.data.frame() # avoid issues with tibble
 
     df_out[ , col_name] <- mat_thr
 
@@ -175,6 +197,6 @@ set_threshold <- function(x,
   df_out[ , -1] <- as.matrix( df_out[ , -1] )
 
   #* return
-  return(df_out)
+  return(df_out %>% as_tibble())
 
 }

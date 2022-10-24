@@ -14,20 +14,21 @@ interpolate(
 )
 }
 \arguments{
-\item{x}{data frame with class \code{Date} or \code{POSIXct} in the first column and numeric
-on the others.}
+\item{x}{data frame with class \code{Date} or \code{POSIX*}
+in the first column and numeric on the others.}
 
 \item{col_name}{string with column name of the series to interpolate.}
 
-\item{out_name}{optional. String with new column name. If you set it as \code{NULL}, the
-function will overwrite the original data frame.}
+\item{out_name}{optional. String with new column name. If you set
+it as \code{NULL}, the function will overwrite the original data frame.}
 
-\item{miss_table}{data frame with three columns: first and last date of interpolation
-(first and second column respectively). The last and third column, is of class \code{numeric}
-with the number of steps to interpolate. See \link{report_miss}.}
+\item{miss_table}{data frame with three columns: first and last date
+of interpolation (first and second column respectively). The last and
+third column, is of class \code{numeric} with the number of steps
+ to interpolate. See \link{report_miss}.}
 
-\item{threshold}{numeric variable with the maximum number of dates in which to apply
-the interpolation.}
+\item{threshold}{numeric variable with the maximum number of dates
+in which to apply the interpolation.}
 
 \item{method}{string with the interpolation method. In this version only
 \code{'linear'} method is allowed.}
@@ -36,7 +37,8 @@ the interpolation.}
 The same data frame but with interpolated values.
 }
 \description{
-This function applies interpolation to fill in missing (or non-recorded) values.
+This function applies interpolation to fill in missing
+ (or non-recorded) values.
 }
 \examples{
 

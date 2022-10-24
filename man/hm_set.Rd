@@ -65,6 +65,7 @@ hm_set(
   hw = NULL,
   qh = NULL,
   qd = NULL,
+  qa = NULL,
   qm = NULL,
   wspd = NULL,
   wdir = NULL,
@@ -82,7 +83,9 @@ hm_set(
   swe = NULL,
   hsnow = NULL,
   kin = NULL,
+  kout = NULL,
   lin = NULL,
+  lout = NULL,
   unvar = NULL
 )
 
@@ -150,6 +153,8 @@ hydro-met station.}
 
 \item{qd}{daily mean river discharge.}
 
+\item{qa}{annual river discharge.}
+
 \item{qm}{monthly mean river discharge.}
 
 \item{wspd}{wind speed.}
@@ -184,7 +189,11 @@ hydro-met station.}
 
 \item{kin}{incoming short-wave radiation.}
 
+\item{kout}{outgoing short-wave radiation.}
+
 \item{lin}{incoming long-wave radiation.}
+
+\item{lout}{outgoing long-wave radiation.}
 
 \item{unvar}{reserved for non-considered variables.}
 
@@ -198,14 +207,15 @@ With this method you can set (or change) an specific slot value (change the tabl
 }
 \section{Functions}{
 \itemize{
-\item \code{hm_set,hydromet-method}: set method for generic object
+\item \code{hm_set(hydromet)}: set method for generic object
 
-\item \code{hm_set,hydromet_station-method}: set method for \code{station} object
+\item \code{hm_set(hydromet_station)}: set method for \code{station} object
 
-\item \code{hm_set,hydromet_compact-method}: set method for \code{compact} object
+\item \code{hm_set(hydromet_compact)}: set method for \code{compact} object
+
 }}
-
 \examples{
+\dontrun{
 # create an hydro-met station
 hm_guido <- hm_create(class_name = 'station')
 
@@ -225,6 +235,6 @@ guido_hq  <- read_snih(path = path_file, by = 'none',
  #       is stromgly recommended
 hm_guido <- hm_set(obj = hm_guido, hq = guido_hq)
 hm_show(obj = hm_guido)
-
+}
 
 }

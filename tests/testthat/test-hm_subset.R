@@ -1,4 +1,4 @@
-context("hm_subset")
+#context("hm_subset")
 
 # lets work with the cuevas station
 path <- system.file('extdata', package = 'hydrotoolbox')

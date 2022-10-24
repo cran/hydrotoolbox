@@ -22,6 +22,12 @@ the function will do it in all columns inside the slot.}
 }
 \value{
 A list summarizing basic statistics and missing data.
+The missing data table presents a data frame (one per \code{col_name})
+with three columns: start-date, end-date and number of missing
+time steps. In the last row of this table you will find the total
+number of missing measurements (under "time_step" column). The
+"first" and "last" columns will have a \code{NA_character} for
+this last row.
 }
 \description{
 Returns a list with two elements: the first one contains basic
@@ -30,13 +36,13 @@ the second one is a table with summary of miss data (see also \link{report_miss}
 }
 \section{Functions}{
 \itemize{
-\item \code{hm_report,hydromet_station-method}: report method for station class
+\item \code{hm_report(hydromet_station)}: report method for station class
 
-\item \code{hm_report,hydromet_compact-method}: report method for compact class
+\item \code{hm_report(hydromet_compact)}: report method for compact class
+
 }}
-
 \examples{
-
+\dontrun{
 # cuevas station
 path <- system.file('extdata', package = 'hydrotoolbox')
 
@@ -56,5 +62,6 @@ hm_cuevas <-
 
 # report incoming solar radiation
 hm_report(obj = hm_cuevas, slot_name = 'kin')
+}
 
 }

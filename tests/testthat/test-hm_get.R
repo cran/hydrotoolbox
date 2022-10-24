@@ -1,4 +1,4 @@
-context("hm_get")
+#context("hm_get")
 
 my_hm <- hm_create()
 

@@ -38,27 +38,38 @@
 #' head( read_snih(path = path_file,  by = 'day', out_name = 'qd(m3/s)') )
 #'
 #'
-read_snih <- function(path, by, out_name = NULL){
-  #**************************
+read_snih <- function(path,
+                      by,
+                      out_name = NULL){
+  #*++++++++++++++++++
   #* conditionals
-  #**************************
+  #*++++++++++++++++++
   #* path
-  check_class(argument = path, target = 'character', arg_name = 'path')
+  check_class(argument = path,
+              target = 'character',
+              arg_name = 'path')
 
   #* by
-  check_class(argument = by, target = 'character', arg_name = 'by')
-  check_length(argument = by, max_allow = 1, arg_name = 'by')
+  check_class(argument = by,
+              target = 'character',
+              arg_name = 'by')
+
+  check_length(argument = by,
+               max_allow = 1,
+               arg_name = 'by')
 
   #* out_name
-  check_class(argument = out_name, target = 'character', arg_name = 'out_name')
+  check_class(argument = out_name,
+              target = 'character',
+              arg_name = 'out_name')
 
 
-  #**************************
+  #*++++++++++++++++++
   #* function
-  #**************************
+  #*++++++++++++++++++
   #* read the file
   table_snih <-
-    read_xlsx(path = path, col_types = 'text') %>% # to be sure that I will work with strings
+    read_xlsx(path = path) %>%
     as.data.frame() # because returns a tibble
 
    # coerce

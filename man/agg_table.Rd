@@ -16,7 +16,8 @@ agg_table(
 )
 }
 \arguments{
-\item{x}{data frame with class \code{Date} or \code{POSIXct} in the first column.}
+\item{x}{data frame or tibble with class \code{Date} or \code{POSIX*}
+in the first column.}
 
 \item{col_name}{string with column(s) name(s) to aggregate.}
 

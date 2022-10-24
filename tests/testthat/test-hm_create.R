@@ -1,4 +1,4 @@
-context("hm_create")
+#context("hm_create")
 
 # try to break the code arguments
 test_that("class_name bad entry", {

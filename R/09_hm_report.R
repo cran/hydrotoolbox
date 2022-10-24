@@ -19,11 +19,17 @@
 #' the function will do it in all columns inside the slot.
 #'
 #' @return A list summarizing basic statistics and missing data.
+#' The missing data table presents a data frame (one per \code{col_name})
+#' with three columns: start-date, end-date and number of missing
+#' time steps. In the last row of this table you will find the total
+#' number of missing measurements (under "time_step" column). The
+#' "first" and "last" columns will have a \code{NA_character} for
+#' this last row.
 #'
 #' @export
 #'
 #' @examples
-#'
+#' \dontrun{
 #' # cuevas station
 #' path <- system.file('extdata', package = 'hydrotoolbox')
 #'
@@ -43,6 +49,7 @@
 #'
 #' # report incoming solar radiation
 #' hm_report(obj = hm_cuevas, slot_name = 'kin')
+#'}
 #'
 setGeneric(name = 'hm_report',
            def = function(obj, slot_name, col_name = 'all')
@@ -55,30 +62,48 @@ setGeneric(name = 'hm_report',
 setMethod(f = 'hm_report',
           signature = 'hydromet_station',
           definition = function(obj, slot_name, col_name = 'all'){
-            #**************************
+
+            #*///////////////
             #* conditionals
-            #**************************
+            #*///////////////
             #* obj
-            check_class(argument = obj, target = 'hydromet_station', arg_name = 'obj')
+            check_class(argument = obj,
+                        target = 'hydromet_station',
+                        arg_name = 'obj')
 
             #* slot_name
-            check_class(argument = slot_name, target = 'character', arg_name = 'slot_name')
-            check_string(argument = slot_name, target = slotNames('hydromet_station')[1:23],
+            check_class(argument = slot_name,
+                        target = 'character',
+                        arg_name = 'slot_name')
+
+            check_string(argument = slot_name,
+                         target = setdiff(x = slotNames("hydromet_station"),
+                                          y = slotNames("hydromet") ),
                          arg_name = 'slot_name')
-            check_length(argument = slot_name, max_allow = 1, arg_name = 'slot_name')
+
+            check_length(argument = slot_name,
+                         max_allow = 1,
+                         arg_name = 'slot_name')
 
             #* col_name
-            check_class(argument = col_name, target = 'character', arg_name = 'col_name')
-            check_string(argument = col_name, target = c('all',
-                                                         colnames( hm_get(obj = obj, slot_name = slot_name ) )[-1] ),
+            check_class(argument = col_name,
+                        target = 'character',
+                        arg_name = 'col_name')
+
+            check_string(argument = col_name,
+                         target = c('all',
+                                    colnames(
+                                      hm_get(obj = obj, slot_name = slot_name ) )[-1] ),
                          arg_name = 'col_name')
 
 
-            #**************************
+            #*//////////////
             #* function
-            #**************************
+            #*//////////////
+
             #* get table
-            table_r <- hm_get(obj = obj, slot_name = slot_name) # table to report
+            table_r <- hm_get(obj = obj,
+                              slot_name = slot_name) # table to report
 
               #* select columns
             if(col_name == 'all'){
@@ -89,9 +114,20 @@ setMethod(f = 'hm_report',
 
             }
 
-            table_s  <- subset(x = table_r, select = col_nm)
+            table_s  <- subset(x = table_r,
+                               select = col_nm)
+
             table_nr <- nrow(table_s)
-            matrix_s <- as.matrix(table_s[ , -1])
+
+            # because we admit other columns than numeric only,
+            # we extract just numeric columns
+            col_classes <- sapply(X = table_s, FUN = class)
+            col_numeric <- grepl(pattern = "numeric",
+                                 x = col_classes)
+
+            matrix_s <- as.matrix( table_s[ , col_numeric, drop = FALSE]  )
+
+           # matrix_s <- as.matrix(table_s[ , -1])
 
               #* calculate stats
             stat_max  <- col_max(x = matrix_s, allow_na = table_nr )
@@ -105,11 +141,12 @@ setMethod(f = 'hm_report',
                             stat_sd)
 
               #* build the data.frame
-            df_stat <- data.frame(date = c( table_s[1, 1], table_s[table_nr, 1],
+            df_stat <- data.frame(date = c( table_s[1, 1, drop = TRUE],
+                                            table_s[table_nr, 1, drop = TRUE],
                                             NA_character_, NA_character_ ),
                                   m_stat)
 
-            colnames(df_stat) <- colnames(table_s)
+            colnames(df_stat) <- c("date", colnames(matrix_s) )
             rownames(df_stat) <- c('min', 'max', 'mean', 'sd')
 
 
@@ -131,29 +168,43 @@ setMethod(f = 'hm_report',
 setMethod(f = 'hm_report',
           signature = 'hydromet_compact',
           definition = function(obj, slot_name = 'compact', col_name = 'all'){
-            #**************************
+            #*//////////////
             #* conditionals
-            #**************************
+            #*//////////////
             #* obj
-            check_class(argument = obj, target = 'hydromet_compact', arg_name = 'obj')
+            check_class(argument = obj,
+                        target = 'hydromet_compact',
+                        arg_name = 'obj')
 
             #* slot_name
             slot_name <- 'compact'
-            check_class(argument = slot_name, target = 'character', arg_name = 'slot_name')
-            check_string(argument = slot_name, target = 'compact',
+            check_class(argument = slot_name,
+                        target = 'character',
+                        arg_name = 'slot_name')
+
+            check_string(argument = slot_name,
+                         target = 'compact',
                          arg_name = 'slot_name')
-            check_length(argument = slot_name, max_allow = 1, arg_name = 'slot_name')
+
+            check_length(argument = slot_name,
+                         max_allow = 1,
+                         arg_name = 'slot_name')
 
             #* col_name
-            check_class(argument = col_name, target = 'character', arg_name = 'col_name')
-            check_string(argument = col_name, target = c('all',
-                                                         colnames( hm_get(obj = obj, slot_name = slot_name ) )[-1] ),
+            check_class(argument = col_name,
+                        target = 'character',
+                        arg_name = 'col_name')
+
+            check_string(argument = col_name,
+                         target = c('all', colnames(
+                           hm_get(obj = obj, slot_name = slot_name ) )[-1] ),
                          arg_name = 'col_name')
 
 
-            #**************************
+            #*//////////////
             #* function
-            #**************************
+            #*//////////////
+
             #* get table
             table_r <- hm_get(obj = obj, slot_name = slot_name) # table to report
 
@@ -168,7 +219,15 @@ setMethod(f = 'hm_report',
 
             table_s  <- subset(x = table_r, select = col_nm)
             table_nr <- nrow(table_s)
-            matrix_s <- as.matrix(table_s[ , -1])
+
+            # because we admit other columns than numeric only,
+            # we extract just numeric columns
+            col_classes <- sapply(X = table_s, FUN = class)
+            col_numeric <- grepl(pattern = "numeric",
+                                 x = col_classes)
+
+            matrix_s <- as.matrix( table_s[ , col_numeric, drop = FALSE]  )
+            #matrix_s <- as.matrix(table_s[ , -1])
 
             #* calculate stats
             stat_max  <- col_max(x = matrix_s, allow_na = table_nr )
@@ -182,11 +241,12 @@ setMethod(f = 'hm_report',
                             stat_sd)
 
             #* build the data.frame
-            df_stat <- data.frame(date = c( table_s[1, 1], table_s[table_nr, 1],
+            df_stat <- data.frame(date = c( table_s[1, 1, drop = TRUE],
+                                            table_s[table_nr, 1, drop = TRUE],
                                             NA_character_, NA_character_ ),
                                   m_stat)
 
-            colnames(df_stat) <- colnames(table_s)
+            colnames(df_stat) <- c("date", colnames(matrix_s) )
             rownames(df_stat) <- c('min', 'max', 'mean', 'sd')
 
 

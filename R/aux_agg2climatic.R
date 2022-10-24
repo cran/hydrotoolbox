@@ -13,12 +13,17 @@
 #'
 #' @keywords internal
 #'
-agg2climatic <- function(df, col_name, fun, allow_na = 0, start_month = 1, end_month = 12){
+agg2climatic <- function(df,
+                         col_name,
+                         fun,
+                         allow_na = 0,
+                         start_month = 1,
+                         end_month = 12){
   # set date format
   date_format <- '%m'
 
   # extract date series with the new format
-  date_agg    <- format(df[ , 1], format = date_format)
+  date_agg    <- format(df[ , 1, drop = TRUE], format = date_format)
 
   # convert to unique
   date_unique <- sort( unique(date_agg) ) # sort()?
@@ -78,7 +83,8 @@ agg2climatic <- function(df, col_name, fun, allow_na = 0, start_month = 1, end_m
   } # end for i loop
 
 
-  return( data.frame(Date = date_out, mat_out[row_order, ]) )
+  return( data.frame(Date = date_out, mat_out[row_order, ]) %>%
+            as_tibble())
 
 
 } # end function

@@ -7,7 +7,8 @@
 hm_create(class_name = "station")
 }
 \arguments{
-\item{class_name}{string with the name of the class. Valid arguments are: \code{hydromet}, \code{station} or \code{compact}.}
+\item{class_name}{string with the name of the class. Valid arguments are:
+\code{hydromet}, \code{station} or \code{compact}.}
 }
 \value{
 An S4 object of class \code{hydromet}.

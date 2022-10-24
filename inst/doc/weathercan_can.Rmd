@@ -26,18 +26,22 @@ library(hydrotoolbox)
 The package [**weathercan**](https://CRAN.R-project.org/package=weathercan)
 provides a very easy way to access Canadian historical weather data from 
 **Environment and Climate Change Canada (ECCC) website**.
-In this vignette we show how to combine the `weathercan` and `hydrotoolbox` functionality.
+In this vignette we show how to combine the `weathercan`
+and `hydrotoolbox` functionality.
 
 ## Installing weathercan
 
-You can install `weathercan` directly from CRAN: `install.packages("weathercan")`. 
-Since this package makes it easier to search for and download multiple months/years of 
-historical weather data, these downloads can be fairly large and performing multiple 
-downloads may use up ECCC’s bandwidth unnecessarily. Try to stick to what you need.
+You can install `weathercan` directly from CRAN:
+`install.packages("weathercan")`. Since this package makes
+it easier to search for and download multiple months/years of
+historical weather data, these downloads can be fairly large
+and performing multiple downloads may use up ECCC’s bandwidth
+unnecessarily. Try to stick to what you need.
 
 ## Combining weathercan with hydrotoolbox
 
-Once you know your station ID,  you can download it (see [this link](https://github.com/ropensci/weathercan)). In the next code lines we show an example.
+Once you know your station ID, you can download it (see [this link](https://github.com/ropensci/weathercan)). In the next
+code lines we show an example.
 
 ```{r station, eval = FALSE}
 # get station ID's
@@ -49,8 +53,6 @@ stations_search("Kamloops", interval = "day")
 # Kamloops A - BC province
 station_id <- 1274    
 
-# because hydrotoolbox works with data frames
-# we convert the tibble
 kam <- 
   weather_dl(station_ids = station_id,
              start = "1900-01-01",
@@ -58,7 +60,7 @@ kam <-
              interval = "day") %>%
   as.data.frame()
 
-# now we create the station object adn we set the data 
+# now we create the station object and we set the data 
 kamloops_hm <- 
   hm_create() %>%
   hm_set(id = station_id, 
@@ -89,13 +91,15 @@ kamloops_hm %>%
 
 ## Using an own made function to build the object
 
-Although this version of the `hydrotoolbox` package does not offer the ability to build
-automatically a hydro-meteorological station from ECCC database, you can save a lot of 
-time by recycling the following function:
+<!-- Although this version of the `hydrotoolbox` package -->
+<!-- does not offer the ability to build -->
+<!-- automatically a hydro-meteorological station from ECCC database, -->
+Note that you can save a lot of time by recycling the
+following function:
 
 ```{r my_fun, eval = FALSE}
 # before running this function, the packages
-# weathercan and hydrotoolbox should be loaded
+# weathercan and hydrotoolbox should be attached
 
 # station_number: character with station ID
 build_weathercan <- function(station_id, 
@@ -147,5 +151,8 @@ kamloops_station %>%
   hm_show()
 ```
 
-Since the builder function is the only one that differs from what was developed for
-SNIH data, we recommend (re)visiting this vignette (`vignette ('snih_arg', package = 'hydrotoolbox')`) to explore some of the available methods.
+Since the builder function is the only one that differs
+from what was developed for SNIH data, we recommend
+(re)visiting this vignette 
+(`vignette ('snih_arg', package = 'hydrotoolbox')`) to
+explore some of the available methods.

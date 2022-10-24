@@ -1,4 +1,4 @@
-context("hm_report")
+#context("hm_report")
 
 # cuevas station
 path <- system.file('extdata', package = 'hydrotoolbox')

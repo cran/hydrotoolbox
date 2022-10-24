@@ -8,17 +8,19 @@
 # will be useful but WITHOUT ANY WARRANTY.
 # **********************************************************
 #
-#' Moving average windows
+#' Rolling functions
 #'
-#' @description Smooth numeric series with a moving average windows.
+#' @description It provides a generic function to rolling table columns.
+#' Internally it is using \code{rollapplyr} from package \code{zoo}.
 #'
 #' @param x data frame (or tibble) with class \code{Date} or
 #' \code{POSIX*} in the first column.
-#' @param col_name string vector with the column(s) name(s) of the series to smooth. The default value
-#' uses the \code{'last'} column. Another single string choice is to use \code{'all'}.
-#' Is important to keep in mind that this argument \bold{commands}, so if you provide two columns
-#' names, \code{k} and \code{pos} arguments must be of length two; if not the single value will
-#' be recycled.
+#' @param col_name string vector with the column(s) name(s) of the series to roll.
+#' The default value uses the \code{'last'} column. Another single string choice
+#' is to use \code{'all'}. Is important to keep in mind that this argument
+#' \bold{commands}, so if you provide two columns
+#' names, \code{k} and \code{pos} arguments must be of length two; if not the
+#' single value will be recycled.
 #' @param k numeric vector with the windows size. E.g.: \code{k = 5}.
 #' @param pos string vector with the position of the windows: \itemize{
 #'      \item 'c': center (default). The output value is in the middle of the window.
@@ -27,14 +29,16 @@
 #'      \item 'r': right aligned. The output value is on the right, so the function weights
 #'      the \code{(k - 1)} values at the left side.
 #' }
-#' @param out_name optional. String vector with new column names. If you set it as \code{NULL}
-#' the function will overwrite the original series.
-#' @param from optional. String value for \code{'Date'} class or \code{POSIX*} class for date-time
-#'  data containing the starting \code{Date}.
-#' @param to optional. String value for \code{'Date'} class or \code{POSIX*} class for date-time
-#'  data containing the ending \code{Date}.
+#' @param FUN the function to be applied.
+#' @param ... optional arguments to \code{FUN}.
+#' @param out_name optional. String vector with new column names. If you set
+#' it as \code{NULL} the function will overwrite the original series.
+#' @param from optional. String value for \code{'Date'} class or \code{POSIX*}
+#' class for date-time data containing the starting \code{Date}.
+#' @param to optional. String value for \code{'Date'} class or \code{POSIX*}
+#' class for date-time data containing the ending \code{Date}.
 #'
-#' @return The same data frame but with the smooth series.
+#' @return The same table but with the rolling series.
 #'
 #' @importFrom zoo rollapplyr
 #'
@@ -49,17 +53,20 @@
 #' # read and apply the function
 #' qd_guido <-
 #'   read_snih(path = path, by = 'day', out_name = 'q(m3/s)') %>%
-#'   mov_avg(k = 5, out_name = 'q_smooth')
+#'   roll_fun(k = 5, FUN = mean, na.rm = TRUE,
+#'    out_name = 'q_smooth')
 #'
 #'
 #'
-mov_avg <- function(x,
-                    col_name = 'last',
-                    k,
-                    pos = 'c',
-                    out_name = NULL,
-                    from = NULL,
-                    to = NULL){
+roll_fun <- function(x,
+                     col_name = 'last',
+                     k,
+                     pos = 'c',
+                     FUN,
+                     ...,
+                     out_name = NULL,
+                     from = NULL,
+                     to = NULL){
   #*+++++++++++++++++
   #* conditionals
   #*+++++++++++++++++
@@ -144,6 +151,11 @@ mov_avg <- function(x,
 
   }
 
+  #* FUN
+  check_class(argument = FUN,
+              target = 'function',
+              arg_name = 'FUN')
+
   # adecuate to rollapplyr
   pos <-
     pos %>%
@@ -154,8 +166,12 @@ mov_avg <- function(x,
 
   #* out_name
   if( !is.null(out_name) ){
-    check_class(argument = out_name, target = 'character', arg_name = 'out_name')
-    check_cross(ref_arg = col_name, eval_arg = out_name,
+    check_class(argument = out_name,
+                target = 'character',
+                arg_name = 'out_name')
+
+    check_cross(ref_arg = col_name,
+                eval_arg = out_name,
                 arg_names = c('col_name', 'out_name') )
 
     # check for non-repeated names
@@ -194,10 +210,6 @@ mov_avg <- function(x,
 
 
   }
-
-  .Deprecated(new = "roll_fun",
-              msg = "Prefered the new roll_fun() function instead. mov_avg() will be deprecated soon.",
-              old = "mov_avg")
 
   #*++++++++++++++
   #* function
@@ -239,29 +251,11 @@ mov_avg <- function(x,
       x_pass %>%
       rollapplyr(width = k[j],
                  align = pos[j],
-                 FUN = mean,
-                 na.rm = TRUE,
+                 FUN,
+                 ...,
                  fill = list(NA_real_)
-                 )
+      )
 
-
-    #+++++
-    #* old implementation
-
-    # if( pos[j] == 'c' ){
-    #
-    #   x_mov <- mov_center(x = x_pass, ws = k[j])
-    #
-    # } else if( pos[j] == 'l' ){
-    #
-    #   x_mov <- mov_left(x = x_pass, ws = k[j])
-    #
-    # } else if( pos[j] == 'r' ){
-    #
-    #   x_mov <- mov_right(x = x_pass, ws = k[j])
-    #
-    # }
-    #+++++
 
     x_smooth[ , j] <- x_mov
 
@@ -271,7 +265,7 @@ mov_avg <- function(x,
   #* out_name
   if( !is.null(out_name) ){
     #* TRUE  => set new col names and merge
-      #* build data frame
+    #* build data frame
     df <- data.frame( x[ind_first:ind_last , 'date'], x_smooth )
     colnames(df) <- c('date', out_name)
 
@@ -287,7 +281,7 @@ mov_avg <- function(x,
 
   } else{
     #* FALSE => set smooth rows in columns
-     #* just set smooth values
+    #* just set smooth values
     x[ind_first:ind_last, col_name] <- x_smooth
 
     out <- x
@@ -295,7 +289,7 @@ mov_avg <- function(x,
   }
 
   #* return
-  return(out)
+  return(out %>% as_tibble())
 
 
 }

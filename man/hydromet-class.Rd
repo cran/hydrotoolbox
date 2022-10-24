@@ -47,3 +47,11 @@ hydro-met station.}
 hydro-met station.}
 }}
 
+\examples{
+\dontrun{
+# create class hydromet
+hm_create(class_name = "hydromet")
+}
+
+
+}

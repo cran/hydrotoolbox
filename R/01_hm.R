@@ -37,6 +37,13 @@
 #'
 #' @export
 #'
+#' @examples
+#' \dontrun{
+#' # create class hydromet
+#' hm_create(class_name = "hydromet")
+#'}
+#'
+#'
 hydromet <- setClass(
   # class name
   'hydromet',

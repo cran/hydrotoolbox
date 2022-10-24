@@ -17,3 +17,9 @@ This subclass is useful for storing in a single data frame ready to use hydro-me
 \item{\code{compact}}{data.frame with Date as first column (class 'Date' or 'POSIXct'). All other columns are the numeric hydro-meteorological variables (double). This subclass was though to join in a single table ready to use data (e.g. in modeling). You can also use it to put together variables of the same kind (e.g. precipitation records) to make some regional analysis.}
 }}
 
+\examples{
+\dontrun{
+# create an compact station
+hm_create(class_name = "compact")
+}
+}

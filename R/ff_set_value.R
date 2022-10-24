@@ -12,20 +12,23 @@
 #'
 #' @description Specify specific values between dates.
 #'
-#' @param x data frame with class \code{Date} or \code{POSIXct} in the first column and
-#' numeric on the others.
+#' @param x data frame or tibble with class \code{Date} or \code{POSIX*}
+#' in the first column.
 #' @param col_name string with column(s) name(s) to set.
-#' @param out_name optional. String with new column(s) name(s). If you set it as \code{NULL}, the
-#' function will overwrite the original data frame.
-#' @param value numeric vector with the numeric values to set between dates (\code{from} and
-#' \code{to}). If you provide a number it will be recycled. When using a multiple dates (i.e.:
-#' 'date' vector in \code{from} and \code{to}) use a list with a numeric vector inside each element.
-#' @param from string vector for \code{'Date'} class or \code{POSIXct} class for date-time data
-#' with the starting \code{Date}.
-#' @param to string vector for \code{'Date'} class or \code{POSIXct} class for date-time data
-#' with the ending \code{Date}.
+#' @param out_name optional. String with new column(s) name(s). If you set it
+#' as \code{NULL}, the function will overwrite the original data frame.
+#' @param value numeric vector with the numeric values to set between
+#' dates (\code{from} and \code{to}). If you provide a number it will be
+#' recycled. When using a multiple dates (i.e.: "date" vector in \code{from}
+#' and \code{to}) use a list with a numeric vector inside each element.
+#' @param from string vector for \code{'Date'} class or \code{POSIX*} class
+#' for date-time data with the starting date.
+#' @param to string vector for \code{'Date'} class or \code{POSIX*} class
+#' for date-time data with the ending date.
 #'
-#' @return The same data frame but with the set numeric values between the dates.
+#' @return The same table but with the set numeric values between the dates.
+#'
+#' @importFrom methods is
 #'
 #' @export
 #'
@@ -51,28 +54,46 @@
 #'  from = c('1990-01-01', '1990-11-01'),
 #'   to = c('1990-06-01', '1990-12-01') )
 #'
-set_value <- function(x, col_name,
-                      out_name = NULL, value,
-                      from, to){
-  #**************************
+set_value <- function(x,
+                      col_name,
+                      out_name = NULL,
+                      value,
+                      from,
+                      to){
+  #*++++++++++++++++
   #* conditionals
-  #**************************
+  #*++++++++++++++++
   #* x
-  check_class(argument = x, target = 'data.frame', arg_name = 'x')
-  check_class(argument = x[ , 1], target = c('Date', 'POSIXct') , arg_name = 'x[ , 1]')
-  check_class(argument = c( as.matrix( x[ , -1] ) ),
-              target = c('numeric') , arg_name = 'x[ , -1]')
+  check_class(argument = x,
+              target = c("tbl_df", "tbl", "data.frame"),
+              arg_name = 'x')
+
+  check_class(argument = x[ , 1, drop = TRUE],
+              target = c("Date", "POSIXct", "POSIXlt"),
+              arg_name = 'x[ , 1]')
+
+  # check_class(argument = c( as.matrix( x[ , -1] ) ),
+  #             target = c('numeric') , arg_name = 'x[ , -1]')
 
   #* col_name
-  check_class(argument = col_name, target = 'character', arg_name = 'col_name')
+  check_class(argument = col_name,
+              target = 'character',
+              arg_name = 'col_name')
+
   check_string(argument = col_name,
                target = colnames(x)[-1],
                arg_name = 'col_name')
 
+  check_class(argument = c( as.matrix( x[ , col_name] ) ),
+              target = c('numeric'),
+              arg_name = 'x[ , col_name]')
+
   #* out_name
   if( !is.null(out_name) ){
 
-    check_class(argument = out_name, target = 'character', arg_name = 'out_name')
+    check_class(argument = out_name,
+                target = 'character',
+                arg_name = 'out_name')
 
     guess <- which( match(x = out_name, table = colnames(x) ) >= 1 )
     if( length(guess) != 0){
@@ -94,40 +115,51 @@ set_value <- function(x, col_name,
   }
 
   #* from and to
-  check_class(argument = from, target = c('character', 'POSIXct'), arg_name = 'from')
-  check_class(argument = to, target = c('character', 'POSIXct'), arg_name = 'to')
+  check_class(argument = from,
+              target = c('character', "Date", "POSIXct", "POSIXlt"),
+              arg_name = 'from')
 
-  check_cross(ref_arg = from, eval_arg = to, arg_names = c('from', 'to') )
+  check_class(argument = to,
+              target = c('character', "Date", "POSIXct", "POSIXlt"),
+              arg_name = 'to')
+
+  check_cross(ref_arg = from,
+              eval_arg = to,
+              arg_names = c('from', 'to') )
 
   n_it <- length(from) # to know if there are multiple periods
 
   #* value
-  check_class(argument = value, target = c('numeric', 'list'), arg_name = 'value')
+  check_class(argument = value,
+              target = c('numeric', 'list'),
+              arg_name = 'value')
   if( n_it > 1 ){
-    check_cross(ref_arg = from, eval_arg = value, arg_names = c('from and to', 'value') )
+    check_cross(ref_arg = from,
+                eval_arg = value,
+                arg_names = c('from and to', 'value') )
   }
 
 
-  #**************************
+  #*++++++++++++++++
   #* function
-  #**************************
+  #*++++++++++++++++
   #* get dates index
-  if( class(x[ , 1]) == 'Date' ){
+  if( is(x[ , 1, drop = TRUE], "Date") ){
 
-    ind_first <- match(x = as.Date( from ), table = x[ , 1])
-    ind_last  <- match(x = as.Date( to ), table = x[ , 1])
+    ind_first <- match(x = as.Date( from ), table = x[ , 1, drop = TRUE])
+    ind_last  <- match(x = as.Date( to ), table = x[ , 1, drop = TRUE])
 
   } else {
     # POSIXct class
-    ind_first <- match(x = from, table = x[ , 1])
-    ind_last  <- match(x = to, table = x[ , 1])
+    ind_first <- match(x = from, table = x[ , 1, drop = TRUE])
+    ind_last  <- match(x = to, table = x[ , 1, drop = TRUE])
 
   }
 
   #* loop in vector dates
   #n_it <- length(ind_first)
 
-  x_copy <- x
+  x_copy <- x %>% as.data.frame() # avoid tibble issues
 
   if( n_it > 1) {
     # more than one period
@@ -156,7 +188,9 @@ set_value <- function(x, col_name,
     cl_names[guess_nm] <- out_name
     colnames(x_copy)   <- cl_names
 
-    df_out <- merge(x = x, y = x_copy, all.x = TRUE)
+    df_out <- merge(x = x %>% as.data.frame(),
+                    y = x_copy,
+                    all.x = TRUE)
 
   } else {
     #* overwrite existing data frame
@@ -166,6 +200,6 @@ set_value <- function(x, col_name,
   }
 
   # return table
-  return(df_out)
+  return(df_out %>% as_tibble())
 
 }

@@ -1,4 +1,4 @@
-context("fill_table")
+#context("fill_table")
 
 # let's use a synthetic example to illustrate the use of the function
 dates <- seq.Date(from = as.Date('1980-01-01'),

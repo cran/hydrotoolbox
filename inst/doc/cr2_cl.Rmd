@@ -77,17 +77,22 @@ that the package provides. In the following sections I will show you how to use 
 
 ## Using classes and methods to build a meteorological station
 
-Como menciono en los principios de diseño de este paquete (`vignette('package_overview', package = 'hydrotoolbox')`), los datos que se registran en las estaciones deben almacenarse en un mismo
-objeto. Por ello primero habrá que crear dicho objeto (o estación hidro-meteorológica) y luego
-usar `hm_build()`, un método que permite cargar automáticamente al objeto todas las variables
+Como menciono en los principios de diseño de este paquete
+(`vignette('package_overview', package = 'hydrotoolbox')`), los
+datos que se registran en las estaciones deben almacenarse en un mismo
+objeto. Por ello primero habrá que crear dicho objeto (o estación
+hidro-meteorológica) y luego usar `hm_build_generic()`, un método que
+permite cargar automáticamente al objeto todas las variables
 que la estación real registra. 
 
 ***
 
-As I mentioned in the design principles of this package (`vignette ('package_overview', package = 'hydrotoolbox')`), the data that is recorded in the stations must be stored in the same
-object. For this reason, you must first create the object (or hydro-meteorological station) and
-then use `hm_build()`, a method that allows you to automatically load all variables to the object
-that the real world station records.
+As I mentioned in the design principles of this package
+(`vignette ('package_overview', package = 'hydrotoolbox')`),
+the data that is recorded in the stations must be stored in the same
+object. For this reason, you must first create the object (or hydro-meteorological station) and then use `hm_build_generic()`,
+a method that allows you to automatically load all variables
+to the object that the real world station records.
 
 ```{r build, eval = FALSE, fig.width = 6, fig.height = 4}
 # path to all example files
@@ -96,18 +101,21 @@ path <- system.file('extdata', package = 'hydrotoolbox')
 # cr2 file
 yeso <- 
   hm_create() %>%
-  hm_build(bureau = 'cr2', path = path,
-           file_name = 'cr2_tmax_yeso_embalse.csv',
-           slot_name = c('tmax'),
-           by = 'day',
-           out_name = c('tair(°C)' )
-          )  
+  hm_build_generic(path = path, 
+                   file_name = "cr2_tmax_yeso_embalse.csv",
+                   slot_name = c('tmax'), 
+                   by = "day", 
+                   out_name = list("tmax_degC"),
+                   FUN = read_cr2
+                   )
 ```
 
-Dado que la función constructora es la única que difiere de lo desarrollado para 
-los datos del SNIH, recomiendo (re)visitar esta viñeta (`vignette('snih_arg', package = 'hydrotoolbox')`)
+Dado que la función constructora es la única que difiere de
+lo desarrollado para los datos del SNIH, recomiendo (re)visitar
+esta viñeta (`vignette('snih_arg', package = 'hydrotoolbox')`)
 
 ***
 
-Since the constructor function is the only one that differs from what was developed for
-SNIH data, I recommend (re)visiting this vignette (`vignette ('snih_arg', package = 'hydrotoolbox')`)
+Since the constructor function is the only one that differs
+from what was developed for SNIH data, I recommend (re)visiting
+this vignette (`vignette ('snih_arg', package = 'hydrotoolbox')`)

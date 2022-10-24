@@ -1,4 +1,4 @@
-context("agg_table")
+#context("agg_table")
 
 # hourly recorded data
 path_file <- system.file('extdata', 'ianigla_cuevas.csv',
@@ -14,7 +14,9 @@ cuevas <- read_ianigla(path = path_file,
 path_file <- system.file('extdata', 'snih_qd_guido.xlsx',
                          package = 'hydrotoolbox')
 
-guido <- read_snih(path = path_file, by = 'day', out_name = 'Q(m3/s)')
+guido <- read_snih(path = path_file,
+                   by = 'day',
+                   out_name = 'Q(m3/s)')
 
 
 # first try to break the code arguments

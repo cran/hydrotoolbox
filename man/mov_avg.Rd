@@ -15,8 +15,8 @@ mov_avg(
 )
 }
 \arguments{
-\item{x}{data frame with class \code{Date} or \code{POSIXct} in the first column and numeric
-on the others.}
+\item{x}{data frame (or tibble) with class \code{Date} or
+\code{POSIX*} in the first column.}
 
 \item{col_name}{string vector with the column(s) name(s) of the series to smooth. The default value
 uses the \code{'last'} column. Another single string choice is to use \code{'all'}.
@@ -37,10 +37,10 @@ be recycled.}
 \item{out_name}{optional. String vector with new column names. If you set it as \code{NULL}
 the function will overwrite the original series.}
 
-\item{from}{optional. String value for \code{'Date'} class or \code{POSIXct} class for date-time
+\item{from}{optional. String value for \code{'Date'} class or \code{POSIX*} class for date-time
 data containing the starting \code{Date}.}
 
-\item{to}{optional. String value for \code{'Date'} class or \code{POSIXct} class for date-time
+\item{to}{optional. String value for \code{'Date'} class or \code{POSIX*} class for date-time
 data containing the ending \code{Date}.}
 }
 \value{

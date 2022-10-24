@@ -12,7 +12,8 @@
 #'
 #' @description This function is the constructor of \code{hydromet} class and its subclass.
 #'
-#' @param class_name string with the name of the class. Valid arguments are: \code{hydromet}, \code{station} or \code{compact}.
+#' @param class_name string with the name of the class. Valid arguments are:
+#'  \code{hydromet}, \code{station} or \code{compact}.
 #'
 #' @return An S4 object of class \code{hydromet}.
 #'
@@ -41,7 +42,8 @@ hm_create <- function(class_name = 'station'){
   check_length(argument = class_name, max_allow = 1, arg_name = 'class_name')
 
   #* check for available strings
-  check_string(argument = class_name, target = c('hydromet', 'station', 'compact'), arg_name = 'class_name')
+  check_string(argument = class_name, target = c('hydromet', 'station', 'compact'),
+               arg_name = 'class_name')
 
 
 

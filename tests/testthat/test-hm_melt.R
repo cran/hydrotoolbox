@@ -1,4 +1,4 @@
-context("hm_melt")
+#context("hm_melt")
 
 # path to all example files
 path <- system.file('extdata', package = 'hydrotoolbox')

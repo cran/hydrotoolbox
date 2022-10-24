@@ -24,6 +24,8 @@ A suitable object for store your hydro-meteorological data.
 
 \item{\code{qm}}{monthly mean river discharge.}
 
+\item{\code{qa}}{annual river discharge.}
+
 \item{\code{wspd}}{wind speed.}
 
 \item{\code{wdir}}{wind direction.}
@@ -56,8 +58,19 @@ A suitable object for store your hydro-meteorological data.
 
 \item{\code{kin}}{incoming short-wave radiation.}
 
+\item{\code{kout}}{outgoing short-wave radiation.}
+
 \item{\code{lin}}{incoming long-wave radiation.}
+
+\item{\code{lout}}{outgoing long-wave radiation.}
 
 \item{\code{unvar}}{reserved for non-considered variables.}
 }}
 
+\examples{
+\dontrun{
+# create an hydromet station
+hm_create(class_name = "station")
+}
+
+}

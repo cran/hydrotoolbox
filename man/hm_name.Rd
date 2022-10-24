@@ -13,7 +13,7 @@ hm_name(obj, slot_name, col_name)
 \S4method{hm_name}{hydromet_compact}(obj, slot_name, col_name)
 }
 \arguments{
-\item{obj}{a valid \code{hydromet_compact} class object.}
+\item{obj}{a valid \code{hydromet_*} class object.}
 
 \item{slot_name}{string with the a valid name.}
 
@@ -27,13 +27,13 @@ Change slot's column names.
 }
 \section{Functions}{
 \itemize{
-\item \code{hm_name,hydromet_station-method}: set new column name for station class
+\item \code{hm_name(hydromet_station)}: set new column name for station class
 
-\item \code{hm_name,hydromet_compact-method}: set new column name for compact class
+\item \code{hm_name(hydromet_compact)}: set new column name for compact class
+
 }}
-
 \examples{
-
+\dontrun{
 # path to all example files
 path <- system.file('extdata', package = 'hydrotoolbox')
 
@@ -52,5 +52,6 @@ hm_create() \%>\%
 hm_name(obj = guido, slot_name = 'qd',
         col_name = 'q(m3/s)') \%>\%
         hm_show(slot_name = 'qd')
+}
 
 }

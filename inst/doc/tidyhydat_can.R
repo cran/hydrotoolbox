@@ -17,8 +17,7 @@ knitr::opts_chunk$set(
 #  station_number <- "05ME007"
 #  
 #  daily_vals <-
-#    hy_daily_flows(station_number) %>%
-#    as.data.frame()
+#    hy_daily_flows(station_number)
 #  
 #  
 #  station_data <-
@@ -41,7 +40,9 @@ knitr::opts_chunk$set(
 #                         other_1 = paste("RHBN:", meta_data$RHBN[1]))
 
 ## ----daily_plot, fig.width = 6, fig.height = 4, eval = FALSE------------------
-#  hm_plot(obj = station_data, slot_name = "qd", col_name = list("Value"))
+#  hm_plot(obj = station_data,
+#          slot_name = "qd",
+#          col_name = list("Value"))
 
 ## ----monthly_plot, fig.width = 6, fig.height = 4, eval = FALSE----------------
 #  monthly <- hm_agg(station_data,
@@ -69,7 +70,7 @@ knitr::opts_chunk$set(
 
 ## ----my_fun, eval = FALSE-----------------------------------------------------
 #  # before running this function, the packages
-#  # tidyhydat and hydrotoolbox should be loaded
+#  # tidyhydat and hydrotoolbox should be attached
 #  
 #  # station_number: character with station ID
 #  build_hydat <- function(station_number){

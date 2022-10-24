@@ -7,19 +7,23 @@
 report_miss(x, col_name = "all")
 }
 \arguments{
-\item{x}{data frame with hydro-meteo data. First column is date and the second the numeric
-vector to be reported.}
+\item{x}{data frame with hydro-meteo data. First column is date and
+the second the numeric vector to be reported.}
 
-\item{col_name}{string vector with the column(s) name(s) to report. By default the function
-will report all numeric columns.}
+\item{col_name}{string vector with the column(s) name(s) to report.
+By default the function will report all numeric columns.}
 }
 \value{
-A list containing a data frame (one per \code{col_name}) with three columns:
-start-date, end-date and number of missing time steps.
+A list containing a data frame (one per \code{col_name})
+with three columns: start-date, end-date and number of missing
+time steps. In the last row of the table you will find the total
+number of missing measurements (under "time_step" column). The
+"first" and "last" columns will have a \code{NA_character} for
+this last row.
 }
 \description{
-Creates a data frame with reported dates and number of times-step of missing or
-not recorded data.
+Creates a data frame with reported dates and number of
+times-step of missing or not recorded data.
 }
 \examples{
 

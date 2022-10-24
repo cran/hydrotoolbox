@@ -37,6 +37,7 @@
 #' @param qh hourly mean river discharge.
 #' @param qd daily mean river discharge.
 #' @param qm monthly mean river discharge.
+#' @param qa annual river discharge.
 #' @param wspd wind speed.
 #' @param wdir wind direction.
 #' @param evap pan-evaporation.
@@ -53,7 +54,9 @@
 #' @param swe snow water equivalent (typically recorded on snow pillows).
 #' @param hsnow snow height from ultrasonic devices.
 #' @param kin incoming short-wave radiation.
+#' @param kout outgoing short-wave radiation.
 #' @param lin incoming long-wave radiation.
+#' @param lout outgoing long-wave radiation.
 #' @param unvar reserved for non-considered variables.
 #' @param compact data frame with Date as first column. All other columns are hydro-meteorological variables.
 #'
@@ -64,6 +67,7 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' # create an hydro-met station
 #' hm_guido <- hm_create(class_name = 'station')
 #'
@@ -83,7 +87,7 @@
 #'  #       is stromgly recommended
 #' hm_guido <- hm_set(obj = hm_guido, hq = guido_hq)
 #' hm_show(obj = hm_guido)
-#'
+#'}
 #'
 ## generic
 setGeneric(name = 'hm_set',
@@ -202,12 +206,13 @@ setMethod(f = 'hm_set',
                                 province = NULL, river = NULL, active = NULL,
                                 basin_area = NULL, basin_eff = NULL,
                                 other_1 = NULL, other_2 = NULL,
-                                hq  = NULL, hw = NULL, qh = NULL, qd = NULL,
+                                hq  = NULL, hw = NULL, qh = NULL, qd = NULL, qa = NULL,
                                 qm = NULL, wspd = NULL, wdir = NULL, evap = NULL,
                                 anem = NULL, patm = NULL, rh = NULL, tair = NULL,
                                 tmax = NULL, tmin = NULL, tmean = NULL, tsoil = NULL,
                                 precip = NULL, rainfall = NULL, swe = NULL, hsnow = NULL,
-                                kin = NULL, lin = NULL, unvar = NULL)
+                                kin = NULL, kout = NULL, lin = NULL, lout = NULL,
+                                unvar = NULL)
           {
             # obj
             if(is.null(obj) == TRUE){
@@ -316,6 +321,13 @@ setMethod(f = 'hm_set',
               colnames(qm) <- c('date', colnames(qm)[-1])
               obj@qm <- qm
             }
+
+            # qa annual discharge
+            if(is.null(qa) == FALSE){
+              colnames(qa) <- c('date', colnames(qa)[-1])
+              obj@qa <- qa
+            }
+
 
 
             # wspd wind speed
@@ -429,11 +441,23 @@ setMethod(f = 'hm_set',
               obj@kin <- kin
             }
 
+            # kout
+            if(is.null(kout) == FALSE){
+              colnames(kout) <- c('date', colnames(kout)[-1])
+              obj@kout <- kout
+            }
+
 
             # lin
             if(is.null(lin) == FALSE){
               colnames(lin) <- c('date', colnames(lin)[-1])
               obj@lin <- lin
+            }
+
+            # lout
+            if(is.null(lout) == FALSE){
+              colnames(lout) <- c('date', colnames(lout)[-1])
+              obj@lout <- lout
             }
 
 

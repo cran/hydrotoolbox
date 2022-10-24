@@ -18,11 +18,11 @@ hm_subset(obj, slot_name = "all", from = NULL, to = NULL)
 \item{slot_name}{string vector with the name(s) of the slot(s) to subset. If you use
 'all' as argument the method will subset all the variables with data.}
 
-\item{from}{string \code{Date} or \code{POSIXct} value with the starting date. You can
+\item{from}{string \code{Date} or \code{POSIX*} value with the starting date. You can
 use \code{from} without \code{to}. In this case you will subset your data \code{from}
 till the end.}
 
-\item{to}{string \code{Date} or \code{POSIXct} value with the starting date. You can
+\item{to}{string \code{Date} or \code{POSIX*} value with the starting date. You can
 use \code{to} without \code{from}. In this case you will subset your data from the
 beginning till \code{to}.}
 }
@@ -34,13 +34,13 @@ The method will subset the required slot.
 }
 \section{Functions}{
 \itemize{
-\item \code{hm_subset,hydromet_station-method}: subset method for station class
+\item \code{hm_subset(hydromet_station)}: subset method for station class
 
-\item \code{hm_subset,hydromet_compact-method}: subset method for compact class
+\item \code{hm_subset(hydromet_compact)}: subset method for compact class
+
 }}
-
 \examples{
-
+\dontrun{
 # cuevas station
 path <- system.file('extdata', package = 'hydrotoolbox')
 
@@ -66,6 +66,6 @@ hm_subset(obj = hm_cuevas, slot_name = 'rh',
           col_name = list('rh(\%)'),
           interactive = TRUE,
           y_lab = 'RH(\%)' )
-
+}
 
 }

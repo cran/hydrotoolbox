@@ -18,8 +18,6 @@ knitr::opts_chunk$set(
 #  # Kamloops A - BC province
 #  station_id <- 1274
 #  
-#  # because hydrotoolbox works with data frames
-#  # we convert the tibble
 #  kam <-
 #    weather_dl(station_ids = station_id,
 #               start = "1900-01-01",
@@ -27,7 +25,7 @@ knitr::opts_chunk$set(
 #               interval = "day") %>%
 #    as.data.frame()
 #  
-#  # now we create the station object adn we set the data
+#  # now we create the station object and we set the data
 #  kamloops_hm <-
 #    hm_create() %>%
 #    hm_set(id = station_id,
@@ -57,7 +55,7 @@ knitr::opts_chunk$set(
 
 ## ----my_fun, eval = FALSE-----------------------------------------------------
 #  # before running this function, the packages
-#  # weathercan and hydrotoolbox should be loaded
+#  # weathercan and hydrotoolbox should be attached
 #  
 #  # station_number: character with station ID
 #  build_weathercan <- function(station_id,

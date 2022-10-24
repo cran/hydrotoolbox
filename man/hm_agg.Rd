@@ -92,13 +92,13 @@ This method allows you to get your data temporally aggregated.
 }
 \section{Functions}{
 \itemize{
-\item \code{hm_agg,hydromet_station-method}: plot method for station class
+\item \code{hm_agg(hydromet_station)}: temporal aggregation method for station class
 
-\item \code{hm_agg,hydromet_compact-method}: plot method for compact class
+\item \code{hm_agg(hydromet_compact)}: temporal aggregation method for compact class
+
 }}
-
 \examples{
-
+\dontrun{
 # cuevas station
 path <- system.file('extdata', package = 'hydrotoolbox')
 
@@ -131,7 +131,7 @@ hm_agg(obj = hm_cuevas, slot_name = 'tair',
       out_name = 'tmean(°C)',
       ) \%>\%
  hm_show(slot_name = 'tmean')
-
+}
 
 
 }

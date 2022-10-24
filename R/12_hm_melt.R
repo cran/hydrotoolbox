@@ -39,7 +39,7 @@
 #' @export
 #'
 #' @examples
-#'
+#' \dontrun{
 #' # lets say that we want to put together snow water equivalent from Toscas (dgi)
 #' # and daily streamflow discharge from Guido (snih)
 #'
@@ -81,12 +81,15 @@
 #'                y_lab = c('q(m3/s)', 'swe(mm)'),
 #'                dual_yaxis = c('right', 'left')
 #'                 )
-#'
+#'}
 #'
 #'
 setGeneric(name = 'hm_melt',
-           def = function(obj, melt, slot_name,
-                          col_name, out_name = NULL)
+           def = function(obj,
+                          melt,
+                          slot_name,
+                          col_name,
+                          out_name = NULL)
            {
              standardGeneric('hm_melt')
            })
@@ -96,41 +99,64 @@ setGeneric(name = 'hm_melt',
 ## compact
 setMethod(f = 'hm_melt',
           signature = 'hydromet_compact',
-          definition = function(obj, melt, slot_name,
-                                col_name, out_name = NULL){
+          definition = function(obj,
+                                melt,
+                                slot_name,
+                                col_name,
+                                out_name = NULL){
 
-            #**************************
+            #*///////////////
             #* conditionals
-            #**************************
+            #*///////////////
             #* obj
-            check_class(argument = obj, target = 'hydromet_compact', arg_name = 'obj')
+            check_class(argument = obj,
+                        target = 'hydromet_compact',
+                        arg_name = 'obj')
 
             #* melt
-            check_class(argument = melt, target = 'character', arg_name = 'melt')
+            check_class(argument = melt,
+                        target = 'character',
+                        arg_name = 'melt')
 
             #* slot_name
-            check_class(argument = slot_name, target = 'list', arg_name = 'slot_name')
+            check_class(argument = slot_name,
+                        target = 'list',
+                        arg_name = 'slot_name')
+
             check_class(argument = unlist(slot_name),
-                        target = 'character', arg_name = 'slot_name elements')
+                        target = 'character',
+                        arg_name = 'slot_name elements')
+
+            target_names <- setdiff(x = slotNames("hydromet_station"),
+                                    y = slotNames("hydromet"))
+
             check_string(argument = unlist(slot_name),
-                         target = c('compact', slotNames('hydromet_station')[1:23] ) ,
+                         target = c('compact',
+                                    target_names ) ,
                          arg_name = 'slot_name elements' )
-            check_cross(ref_arg = melt , eval_arg = slot_name, arg_names = c('melt', 'slot_name') )
+
+            check_cross(ref_arg = melt,
+                        eval_arg = slot_name,
+                        arg_names = c('melt', 'slot_name') )
 
             #* col_name
-            check_class(argument = col_name, target = 'character', arg_name = 'col_name')
+            check_class(argument = col_name,
+                        target = 'character',
+                        arg_name = 'col_name')
 
             #* out_name
             if( !is.null(out_name) ){
 
-              check_class(argument = out_name, target = 'character', arg_name = 'out_name')
+              check_class(argument = out_name,
+                          target = 'character',
+                          arg_name = 'out_name')
 
             }
 
 
-            #**************************
+            #*////////////
             #* function
-            #**************************
+            #*////////////
 
             n_it <- length(melt)
 

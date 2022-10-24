@@ -7,19 +7,18 @@
 set_threshold(x, col_name, out_name = NULL, threshold, case = ">=")
 }
 \arguments{
-\item{x}{data frame with class Date in the first column and
-numeric on the others.}
+\item{x}{data frame or tibble with class Date or POSIX* in the first column.}
 
 \item{col_name}{string with column(s) name(s) where to apply the function.}
 
-\item{out_name}{optional. String with new column(s) name(s). If you set it as \code{NULL},
-the function will overwrite the original data frame.}
+\item{out_name}{optional. String with new column(s) name(s). If you set it
+as \code{NULL}, the function will overwrite the original table.}
 
 \item{threshold}{numeric vector with the threshold value(s).
 If you provide a single value it will be recycled among \code{col_name} strings.}
 
-\item{case}{string with either '>=' (greater or equal than) or '<=' (lesser or equal than)
-symbol. Default string is '>='.}
+\item{case}{string with either ">=" (greater or equal than) or "<=" (lesser or
+equal than) symbol. Default string is ">=".}
 }
 \value{
 The same data frame but with the threshold set.

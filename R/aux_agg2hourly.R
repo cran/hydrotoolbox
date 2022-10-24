@@ -11,18 +11,24 @@
 #'
 #' @keywords internal
 #'
-agg2hourly <- function(df, col_name, fun, allow_na = 0){
+agg2hourly <- function(df,
+                       col_name,
+                       fun,
+                       allow_na = 0){
   # set date format
   date_format <- '%Y-%m-%d %H'
 
   # extract date series with the new format
-  date_agg    <- format(df[ , 1], format = date_format)
+  date_agg    <- format(df[ , 1, drop = TRUE], format = date_format)
 
   # convert to unique
   date_unique <- unique(date_agg) # sort()?
 
   # creates the output POSIXct vector
-  date_out    <- as.POSIXct( paste0(date_unique, ':00:00'), tz = 'UTM' )
+  tzone_form  <- attr(date_agg, which = "tzone")
+
+  date_out    <- as.POSIXct( paste0(date_unique, ':00:00'),
+                             tz = tzone_form )
 
   # matrix creation for output and iteration
   n_it  <- length(date_out) # number of iterations
@@ -48,7 +54,9 @@ agg2hourly <- function(df, col_name, fun, allow_na = 0){
       col_index  <- which(fun == fun_string[ group_unique[j] ])
       sub_matrix <- mat_in[row_index, col_index, drop = FALSE]
 
-      mat_out[i, col_index] <- col_stats_cpp(x = sub_matrix, stats = fun_string[ group_unique[j] ], allow_na = allow_na)
+      mat_out[i, col_index] <- col_stats_cpp(x = sub_matrix,
+                                             stats = fun_string[ group_unique[j] ],
+                                             allow_na = allow_na)
 
       rm(col_index, sub_matrix, j)
 
@@ -60,7 +68,9 @@ agg2hourly <- function(df, col_name, fun, allow_na = 0){
   } # end for i loop
 
 
-  return( data.frame(Date = date_out, mat_out) )
+  return( data.frame(Date = date_out, mat_out) %>%
+            as_tibble()
+          )
 
 
 } # end function

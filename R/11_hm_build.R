@@ -37,7 +37,7 @@
 #' @export
 #'
 #' @examples
-#'
+#' \dontrun{
 #' # path to all example files
 #' path <- system.file('extdata', package = 'hydrotoolbox')
 #'
@@ -87,7 +87,7 @@
 #'
 #' # mnemos => the data are the same of snih but generated
 #' #           with MNEMOSIII software.
-#'
+#'}
 #'
 setGeneric(name = 'hm_build',
            def = function(obj,
@@ -110,62 +110,94 @@ setMethod(f = 'hm_build',
                                 slot_name, by,
                                 out_name = NULL,
                                 sheet = NULL){
-            #**************************
+            #*///////////////////
             #* conditionals
-            #**************************
+            #*///////////////////
             #* obj
-            check_class(argument = obj, target = 'hydromet_station', arg_name = 'obj')
+            check_class(argument = obj,
+                        target = 'hydromet_station',
+                        arg_name = 'obj')
 
             #* bureau
-            check_class(argument = bureau, target = 'character', arg_name = 'bureau')
+            check_class(argument = bureau,
+                        target = 'character',
+                        arg_name = 'bureau')
+
             check_string(argument = bureau,
-                         target = c('aic', 'cr2', 'dgi', 'ianigla', 'mnemos', 'snih'),
+                         target = c('aic', 'cr2', 'dgi',
+                                    'ianigla', 'mnemos', 'snih'),
                          arg_name = 'bureau')
-            check_length(argument = bureau, max_allow = 1, arg_name = 'bureau')
+
+            check_length(argument = bureau,
+                         max_allow = 1,
+                         arg_name = 'bureau')
 
             #* file_name
-            check_class(argument = file_name, target = 'character', arg_name = 'file_name')
+            check_class(argument = file_name,
+                        target = 'character',
+                        arg_name = 'file_name')
 
             #* path (invert the order because length issue)
-            check_class(argument = path, target = 'character', arg_name = 'path')
+            check_class(argument = path,
+                        target = 'character',
+                        arg_name = 'path')
+
             check_length(argument = path,
                          max_allow = length(file_name),
                          arg_name = 'path')
 
-            # check the file(s) existance
-            check_string(argument = file_name, target = list.files(path = path),
+            # check the file(s) existence
+            check_string(argument = file_name,
+                         target = list.files(path = path),
                          arg_name = 'file_name')
 
             #* slot_name
-            check_class(argument = slot_name, target = 'character', arg_name = 'slot_name')
+            check_class(argument = slot_name,
+                        target = 'character',
+                        arg_name = 'slot_name')
+
             check_string(argument = slot_name,
-                         target = slotNames('hydromet_station')[1:23],
+                         target = setdiff(
+                           x = slotNames("hydromet_station"),
+                           y = slotNames("hydromet")
+                         ),
                          arg_name = 'slot_name')
 
             #* by
-            check_class(argument = by, target = 'character', arg_name = 'by')
+            check_class(argument = by,
+                        target = 'character',
+                        arg_name = 'by')
 
             #* out_name
             if( !is.null(out_name) ){
 
-              check_class(argument = out_name, target = 'character', arg_name = 'out_name')
+              check_class(argument = out_name,
+                          target = 'character',
+                          arg_name = 'out_name')
 
             }
 
             #* sheet
             if( !is.null(sheet) ){
 
-              check_class(argument = sheet, target = c('character', 'integer'), arg_name = 'sheet')
+              check_class(argument = sheet,
+                          target = c('character', 'integer'),
+                          arg_name = 'sheet')
 
             }
 
-            #**************************
+            #*//////////////
             #* function
-            #**************************
+            #*//////////////
             if( bureau == 'aic'){
               #* aic
-              check_length(argument = path, max_allow = 1, arg_name = 'path (aic)') # path
-              check_length(argument = file_name, max_allow = 1, arg_name = 'file_name (aic)') # file_name
+              check_length(argument = path,
+                           max_allow = 1,
+                           arg_name = 'path (aic)') # path
+
+              check_length(argument = file_name,
+                           max_allow = 1,
+                           arg_name = 'file_name (aic)') # file_name
 
               table_aic <- read_aic(path = paste0(path, '/', file_name),
                                     by = by,
@@ -179,7 +211,9 @@ setMethod(f = 'hm_build',
 
                 table_sub <- table_aic[ , c(1, (i+1) )]
 
-                out_txt <- paste0('hm_set(obj = obj,', slot_name[i], '=', 'table_sub', ')')
+                out_txt <- paste0('hm_set(obj = obj,',
+                                  slot_name[i], '=', 'table_sub', ')')
+
                 obj     <- eval( parse(text = out_txt) )
 
               } # end for loop
@@ -218,7 +252,9 @@ setMethod(f = 'hm_build',
                                       by = by[i],
                                       out_name = out_name[i])
 
-                out_txt <- paste0('hm_set(obj = obj,', slot_name[i], '=', 'table_cr2', ')')
+                out_txt <- paste0('hm_set(obj = obj,',
+                                  slot_name[i], '=', 'table_cr2', ')')
+
                 obj     <- eval( parse(text = out_txt) )
 
                 rm(temp_path, table_cr2, out_txt)
@@ -233,10 +269,17 @@ setMethod(f = 'hm_build',
             } else if(bureau == 'dgi'){
               #* dgi
               #* check single for arguments
-              check_length(argument = path, max_allow = 1, arg_name = 'path (dgi)') # path
-              check_length(argument = file_name, max_allow = 1,
+              check_length(argument = path,
+                           max_allow = 1,
+                           arg_name = 'path (dgi)') # path
+
+              check_length(argument = file_name,
+                           max_allow = 1,
                            arg_name = 'file_name (dgi)') # file_name
-              check_length(argument = by, max_allow = 1, arg_name = 'by (dgi)') # by
+
+              check_length(argument = by,
+                           max_allow = 1,
+                           arg_name = 'by (dgi)') # by
 
               #* get fix values
               file_path <- paste0(path, '/', file_name)
@@ -270,7 +313,9 @@ setMethod(f = 'hm_build',
                                       out_name = out_name[i],
                                       sheet = sheet_name[i] )
                 #* set variable
-                out_txt <- paste0('hm_set(obj = obj,', slot_name[i], '=', 'table_dgi', ')')
+                out_txt <- paste0('hm_set(obj = obj,',
+                                  slot_name[i], '=', 'table_dgi', ')')
+
                 obj     <- eval( parse(text = out_txt) )
 
                 rm(table_dgi, out_txt)
@@ -283,8 +328,13 @@ setMethod(f = 'hm_build',
 
             } else if(bureau == 'ianigla'){
               #* ianigla
-              check_length(argument = path, max_allow = 1, arg_name = 'path (ianigla)') # path
-              check_length(argument = file_name, max_allow = 1, arg_name = 'file_name (ianigla)') # file_name
+              check_length(argument = path,
+                           max_allow = 1,
+                           arg_name = 'path (ianigla)') # path
+
+              check_length(argument = file_name,
+                           max_allow = 1,
+                           arg_name = 'file_name (ianigla)') # file_name
 
               table_ianigla <- read_ianigla(path = paste0(path, '/', file_name),
                                             by = by,
@@ -298,7 +348,8 @@ setMethod(f = 'hm_build',
 
                 table_sub <- table_ianigla[ , c(1, (i+1) )]
 
-                out_txt <- paste0('hm_set(obj = obj,', slot_name[i], '=', 'table_sub', ')')
+                out_txt <- paste0('hm_set(obj = obj,',
+                                  slot_name[i], '=', 'table_sub', ')')
                 obj     <- eval( parse(text = out_txt) )
 
               } # end for loop
@@ -309,8 +360,13 @@ setMethod(f = 'hm_build',
 
             } else if(bureau == 'mnemos'){
               #* mnemos
-              check_length(argument = path, max_allow = 1, arg_name = 'path (mnemos)') # path
-              check_length(argument = file_name, max_allow = 1, arg_name = 'file_name (mnemos)') # file_name
+              check_length(argument = path,
+                           max_allow = 1,
+                           arg_name = 'path (mnemos)') # path
+
+              check_length(argument = file_name,
+                           max_allow = 1,
+                           arg_name = 'file_name (mnemos)') # file_name
 
               #* args fit to slot_name
               n_it <- length(slot_name)
@@ -423,7 +479,9 @@ setMethod(f = 'hm_build',
                                         by = by[i],
                                         out_name = out_name[i])
 
-                out_txt <- paste0('hm_set(obj = obj,', slot_name[i], '=', 'table_snih', ')')
+                out_txt <- paste0('hm_set(obj = obj,',
+                                  slot_name[i], '=', 'table_snih', ')')
+
                 obj     <- eval( parse(text = out_txt) )
 
                 rm(table_snih, out_txt, file_path)

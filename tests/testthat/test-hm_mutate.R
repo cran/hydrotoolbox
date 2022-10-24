@@ -1,4 +1,4 @@
-context("hm_mutate")
+#context("hm_mutate")
 
 # path to all example files
 path <- system.file('extdata', package = 'hydrotoolbox')

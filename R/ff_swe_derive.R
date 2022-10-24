@@ -10,15 +10,15 @@
 #
 #' Snow Water Equivalent to melt or snowfall
 #'
-#' @description Derive melt or snowfall series from snow water equivalent measurements
-#' (from snow pillows).
+#' @description Derive melt or snowfall series from snow water
+#' equivalent measurements (snow pillows measurements).
 #'
-#' @param x data frame with class Date in the first column and
-#' numeric on the others.
+#' @param x data frame or tibble with class Date or POSIX* in the
+#' first column.
 #' @param col_name string with column(s) name(s) where to apply the function.
-#' @param out_name optional. String with new column(s) name(s). If you set it as \code{NULL},
-#' the function will overwrite the original data frame.
-#' @param case string vector with 'sf' (meaning snowfall) or 'm' (meaning melt).
+#' @param out_name optional. String with new column(s) name(s). If you
+#' set it as \code{NULL}, the function will overwrite the original table.
+#' @param case string vector with "sf" (meaning snowfall) or "m" (meaning melt).
 #'
 #' @return The same data frame but with the derived series.
 #'
@@ -47,26 +47,42 @@ swe_derive <- function(x,
                        col_name,
                        out_name = NULL,
                        case){
-  #**************************
+  #*++++++++++++++++++
   #* conditionals
-  #**************************
+  #*++++++++++++++++++
   #* x
-  check_class(argument = x, target = 'data.frame', arg_name = 'x')
-  check_class(argument = x[ , 1], target = c('Date', 'POSIXct') , arg_name = 'x[ , 1]')
-  check_class(argument = c( as.matrix( x[ , -1] ) ),
-              target = c('numeric') , arg_name = 'x[ , -1]')
+  check_class(argument = x,
+              target = c("tbl_df", "tbl", "data.frame"),
+              arg_name = 'x')
+
+  check_class(argument = x[ , 1, drop = TRUE],
+              target = c("Date", "POSIXct", "POSIXlt"),
+              arg_name = 'x[ , 1]')
+
+  # check_class(argument = c( as.matrix( x[ , -1] ) ),
+  #             target = c('numeric') , arg_name = 'x[ , -1]')
 
   #* col_name
-  check_class(argument = col_name, target = 'character', arg_name = 'col_name')
+  check_class(argument = col_name,
+              target = 'character',
+              arg_name = 'col_name')
+
   check_string(argument = col_name,
                target = colnames(x)[-1],
                arg_name = 'col_name')
+
+  check_class(argument = c( as.matrix( x[ , col_name] ) ),
+              target = c('numeric'),
+              arg_name = 'x[ , col_name]')
+
   n_it <- length(col_name)
 
   #* out_name
   if( !is.null(out_name) ){
 
-    check_class(argument = out_name, target = 'character', arg_name = 'out_name')
+    check_class(argument = out_name,
+                target = 'character',
+                arg_name = 'out_name')
 
     guess <- which( match(x = out_name, table = colnames(x) ) >= 1 )
     if( length(guess) != 0){
@@ -89,8 +105,14 @@ swe_derive <- function(x,
 
 
   #* case
-  check_class(argument = case, target = c('character'), arg_name = 'case')
-  check_string(argument = case, target = c('sf', 'm'), arg_name = 'case')
+  check_class(argument = case,
+              target = c('character'),
+              arg_name = 'case')
+
+  check_string(argument = case,
+               target = c('sf', 'm'),
+               arg_name = 'case')
+
   if( n_it > 1 & length(case == 1) ){
 
     case <- rep(case, n_it)
@@ -103,9 +125,9 @@ swe_derive <- function(x,
   }
 
 
-  #**************************
+  #*+++++++++++++++
   #* function
-  #**************************
+  #*+++++++++++++++
   # get matrix
   mat_target <-
     x[ , col_name, drop = FALSE] %>%
@@ -146,13 +168,13 @@ swe_derive <- function(x,
     #* use out_name
     colnames(mat_swe) <- out_name
 
-    df_out <- x
+    df_out <- x %>% as.data.frame() # avoid tibble issues
     df_out[ , out_name] <- mat_swe
 
   } else {
     #* overwrite existing data frame
 
-    df_out <- x
+    df_out <- x %>% as.data.frame() # avoid tibble issues
 
     df_out[ , col_name] <- mat_swe
 
@@ -163,7 +185,7 @@ swe_derive <- function(x,
 
 
   #* return
-  return(df_out)
+  return(df_out %>% as_tibble())
 
 
 }

@@ -35,13 +35,13 @@ to delete or change the original data, but it is upon to you.
 }
 \section{Functions}{
 \itemize{
-\item \code{hm_mutate,hydromet_station-method}: method for station class.
+\item \code{hm_mutate(hydromet_station)}: method for station class.
 
-\item \code{hm_mutate,hydromet_compact-method}: method for compact class.
+\item \code{hm_mutate(hydromet_compact)}: method for compact class.
+
 }}
-
 \examples{
-
+\dontrun{
 # path to all example files
 path <- system.file('extdata', package = 'hydrotoolbox')
 
@@ -66,7 +66,7 @@ hm_mutate(obj = guido, slot_name = 'qd',
          line_color = c('dodgerblue', 'red3'),
          y_lab = 'Q(m3/s)',
          legend_lab = c('original', 'mov_avg')  )
-
+}
 
 
 }

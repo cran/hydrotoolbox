@@ -26,7 +26,7 @@
 #'
 #'
 #' @examples
-#'
+#' \dontrun{
 #' # lets work with the cuevas station
 #' path <- system.file('extdata', package = 'hydrotoolbox')
 #'
@@ -56,6 +56,7 @@
 #' # focus on specific slots
 #' hm_show(obj = hm_cuevas, slot_name = c('kin', 'rh') )
 #' hm_show(obj = hm_cuevas, slot_name = c('kin', 'rh'), show = 'tail' )
+#'}
 #'
 setGeneric(name = 'hm_show',
 def = function(obj, slot_name = 'fill', show = 'head')
@@ -63,33 +64,49 @@ def = function(obj, slot_name = 'fill', show = 'head')
   standardGeneric('hm_show')
 })
 
-#' @describeIn hm_show plot method for hydromet class
+#' @describeIn hm_show print method for hydromet class
 ## hydromet
 setMethod(f = 'hm_show',
           signature = 'hydromet',
           definition = function(obj, slot_name = 'fill', show = 'head')
           {
-            #**************************
+            #*////////////////////
             #* conditionals
-            #**************************
+            #*////////////////////
             #* obj
-            check_class(argument = obj, target = 'hydromet', arg_name = 'obj')
+            check_class(argument = obj,
+                        target = 'hydromet',
+                        arg_name = 'obj')
 
             #* slot_name
-            check_class(argument = slot_name, target = 'character', arg_name = 'slot_name')
+            check_class(argument = slot_name,
+                        target = 'character',
+                        arg_name = 'slot_name')
+
             check_string(argument = slot_name,
-                         target = c('fill', 'empty', slotNames(x = 'hydromet') ),
+                         target = c('fill',
+                                    'empty',
+                                    slotNames(x = 'hydromet') ),
                          arg_name = 'slot_name')
 
             #* show
-            check_class(argument = show, target = 'character', arg_name = 'show')
-            check_string(argument = show, target = c('head', 'tail'), arg_name = 'show')
-            check_length(argument = show, max_allow = 1, arg_name = 'show')
+            check_class(argument = show,
+                        target = 'character',
+                        arg_name = 'show')
+
+            check_string(argument = show,
+                         target = c('head', 'tail'),
+                         arg_name = 'show')
+
+            check_length(argument = show,
+                         max_allow = 1,
+                         arg_name = 'show')
 
 
-            #*#**************************
+            #*////////////////////
             #* function
-            #****************************
+            #*////////////////////
+
             if(slot_name[1] == 'fill'){
               # all slots with data
               slot_nm <- slotNames(x = 'hydromet')
@@ -174,37 +191,55 @@ setMethod(f = 'hm_show',
           } )
 
 
-#' @describeIn hm_show plot method for station class
+#' @describeIn hm_show print method for station class
 ## station
 setMethod(f = 'hm_show',
           signature = 'hydromet_station',
           definition = function(obj, slot_name = 'fill', show = 'head')
           {
-            #**************************
+            #*////////////////////
             #* conditionals
-            #**************************
+            #*////////////////////
+
             #* obj
-            check_class(argument = obj, target = 'hydromet_station', arg_name = 'obj')
+            check_class(argument = obj,
+                        target = 'hydromet_station',
+                        arg_name = 'obj')
 
             #* slot_name
-            check_class(argument = slot_name, target = 'character', arg_name = 'slot_name')
+            check_class(argument = slot_name,
+                        target = 'character',
+                        arg_name = 'slot_name')
+
             check_string(argument = slot_name,
-                         target = c('fill', 'empty', slotNames(x = 'hydromet_station') ),
+                         target = c('fill', 'empty',
+                                    slotNames(x = 'hydromet_station') ),
                          arg_name = 'slot_name')
 
             #* show
-            check_class(argument = show, target = 'character', arg_name = 'show')
-            check_string(argument = show, target = c('head', 'tail'), arg_name = 'show')
-            check_length(argument = show, max_allow = 1, arg_name = 'show')
+            check_class(argument = show,
+                        target = 'character',
+                        arg_name = 'show')
+
+            check_string(argument = show,
+                         target = c('head', 'tail'),
+                         arg_name = 'show')
+
+            check_length(argument = show,
+                         max_allow = 1,
+                         arg_name = 'show')
 
 
 
-            #*#**************************
+            #*////////////////////
             #* function
-            #****************************
+            #*////////////////////
+
             if(slot_name[1] == 'fill'){
               # all slots with data
-              slot_nm <- slotNames(x = 'hydromet_station')[1:23]
+              slot_nm <- setdiff(x = slotNames("hydromet_station"),
+                                 y = slotNames("hydromet")
+                                 )
               n_it    <- length(slot_nm)
 
               out <- list()
@@ -212,7 +247,7 @@ setMethod(f = 'hm_show',
                 # get the data
                data_out <- hm_get(obj = obj, slot_name = slot_nm[i])
 
-               if( data.class(data_out) == 'data.frame' & ncol(data_out) > 0){
+               if(  !is.null(data_out)){
 
                  if(show == 'head'){
                    out[[ slot_nm[i] ]] <- head( data_out )
@@ -230,7 +265,10 @@ setMethod(f = 'hm_show',
 
             } else if(slot_name[1] == 'empty'){
               # all empty slots
-              slot_nm <- slotNames(x = 'hydromet_station')[1:23]
+              slot_nm <- setdiff(x = slotNames("hydromet_station"),
+                                 y = slotNames("hydromet")
+                                 )
+
               n_it    <- length(slot_nm)
 
               out <- list()
@@ -238,7 +276,7 @@ setMethod(f = 'hm_show',
                 # get the data
                 data_out <- hm_get(obj = obj, slot_name = slot_nm[i])
 
-                if( data.class(data_out) == 'data.frame' & ncol(data_out) == 0){
+                if( ncol(data_out) == 0){
 
                   if(show == 'head'){
                     out[[ slot_nm[i] ]] <- head( data_out )
@@ -286,34 +324,49 @@ setMethod(f = 'hm_show',
           } )
 
 
-#' @describeIn hm_show plot method for compact class
+#' @describeIn hm_show print method for compact class
 ## compact
 setMethod(f = 'hm_show',
           signature = 'hydromet_compact',
           definition = function(obj, slot_name = 'compact', show = 'head')
           {
-            #**************************
+            #*/////////////////
             #* conditionals
-            #**************************
+            #*/////////////////
+
             #* obj
-            check_class(argument = obj, target = 'hydromet_compact', arg_name = 'obj')
+            check_class(argument = obj,
+                        target = 'hydromet_compact',
+                        arg_name = 'obj')
 
             #* slot_name
-            check_class(argument = slot_name, target = 'character', arg_name = 'slot_name')
+            check_class(argument = slot_name,
+                        target = 'character',
+                        arg_name = 'slot_name')
+
             check_string(argument = slot_name,
-                         target = c('fill', 'empty', slotNames(x = 'hydromet_compact') ),
+                         target = c('fill', 'empty',
+                                    slotNames(x = 'hydromet_compact') ),
                          arg_name = 'slot_name')
 
             #* show
-            check_class(argument = show, target = 'character', arg_name = 'show')
-            check_string(argument = show, target = c('head', 'tail'), arg_name = 'show')
-            check_length(argument = show, max_allow = 1, arg_name = 'show')
+            check_class(argument = show,
+                        target = 'character',
+                        arg_name = 'show')
+
+            check_string(argument = show,
+                         target = c('head', 'tail'),
+                         arg_name = 'show')
+
+            check_length(argument = show,
+                         max_allow = 1,
+                         arg_name = 'show')
 
 
-
-            #*#**************************
+            #*/////////////////
             #* function
-            #****************************
+            #*/////////////////
+
             if(slot_name == 'fill'){
               # all slots with data
               slot_nm <- 'compact'
@@ -324,7 +377,7 @@ setMethod(f = 'hm_show',
                 # get the data
                 data_out <- hm_get(obj = obj, slot_name = slot_nm[i])
 
-                if( data.class(data_out) == 'data.frame' & ncol(data_out) > 0){
+                if(  !is.null(data_out)){
 
                   if(show == 'head'){
                     out[[ slot_nm[i] ]] <- head( data_out )
@@ -350,7 +403,7 @@ setMethod(f = 'hm_show',
                 # get the data
                 data_out <- hm_get(obj = obj, slot_name = slot_nm[i])
 
-                if( data.class(data_out) == 'data.frame' & ncol(data_out) == 0){
+                if( ncol(data_out) == 0){
 
                   if(show == 'head'){
                     out[[ slot_nm[i] ]] <- head( data_out )

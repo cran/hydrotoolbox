@@ -39,17 +39,28 @@
 #'
 #'
 qm_vol <- function(x, col_name, out_name = NULL){
-  #**************************
+
+  #*////////////////////
   #* conditionals
-  #**************************
+  #*////////////////////
+
   #* x
-  check_class(argument = x, target = 'data.frame', arg_name = 'x')
-  check_class(argument = x[ , 1], target = c('Date') , arg_name = 'x[ , 1]')
-  check_class(argument = c( as.matrix( x[ , -1] ) ),
-              target = c('numeric') , arg_name = 'x[ , -1]')
+  check_class(argument = x,
+              target = c("tbl_df", "tbl", "data.frame"),
+              arg_name = 'x')
+
+  check_class(argument = x[ , 1, drop = TRUE],
+              target = c("Date", "POSIXct", "POSIXlt"),
+              arg_name = 'x[ , 1]')
+
+  # check_class(argument = c( as.matrix( x[ , -1] ) ),
+  #             target = c('numeric') , arg_name = 'x[ , -1]')
 
   #* col_name
-  check_class(argument = col_name, target = 'character', arg_name = 'col_name')
+  check_class(argument = col_name,
+              target = 'character',
+              arg_name = 'col_name')
+
   check_string(argument = col_name,
                target = colnames(x)[-1],
                arg_name = 'col_name')
@@ -57,7 +68,9 @@ qm_vol <- function(x, col_name, out_name = NULL){
   #* out_name
   if( !is.null(out_name) ){
 
-    check_class(argument = out_name, target = 'character', arg_name = 'out_name')
+    check_class(argument = out_name,
+                target = 'character',
+                arg_name = 'out_name')
 
     guess <- which( match(x = out_name, table = colnames(x) ) >= 1 )
     if( length(guess) != 0){
@@ -78,18 +91,30 @@ qm_vol <- function(x, col_name, out_name = NULL){
 
   }
 
-  #**************************
+  #*/////////////////
   #* function
-  #**************************
+  #*/////////////////
+
   n_it <- nrow(x)
 
   # get months
-  month_plus <- x[ , 1]
+  month_plus <- x[ , 1, drop = TRUE]
 
   # make the magic with dates
   month(month_plus) <- month(month_plus) + 1
 
   days <- as.integer( format(month_plus - 1, format = '%d') )
+
+  # check that final_table contains numerics!
+  col_classes <-
+    x[ , col_name, drop = FALSE] %>%
+    sapply(class) %>%
+    unlist() %>%
+    setdiff(y = c("Date", "POSIXct", "POSIXt", "POSIXlt"))
+
+  check_string(argument = col_classes,
+               target = "numeric",
+               arg_name = "col_name")
 
   # calculate monthly discharge in hm3
   out <- x[ , col_name, drop = FALSE] * days * 0.0864

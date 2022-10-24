@@ -46,7 +46,7 @@
 #' @export
 #'
 #' @examples
-#'
+#' \dontrun{
 #' # cuevas station
 #' path <- system.file('extdata', package = 'hydrotoolbox')
 #'
@@ -79,7 +79,7 @@
 #'       out_name = 'tmean(°C)',
 #'       ) %>%
 #'  hm_show(slot_name = 'tmean')
-#'
+#'}
 #'
 #'
 setGeneric(name = 'hm_agg',
@@ -91,73 +91,107 @@ setGeneric(name = 'hm_agg',
            })
 
 
-#' @describeIn hm_agg plot method for station class
+#' @describeIn hm_agg temporal aggregation method for station class
 ## station
 setMethod(f = 'hm_agg',
           signature = 'hydromet_station',
           definition = function(obj, slot_name, col_name, fun, period, out_name = NULL,
                                 allow_na = 0, start_month = 1, end_month = 12,
                                 relocate = NULL){
-            #**************************
+            #*/////////////////
             #* conditionals
-            #**************************
+            #*/////////////////
             #* obj
-            check_class(argument = obj, target = 'hydromet_station', arg_name = 'obj')
+            check_class(argument = obj,
+                        target = 'hydromet_station',
+                        arg_name = 'obj')
 
             #* slot_name
-            check_class(argument = slot_name, target = 'character', arg_name = 'slot_name')
+            check_class(argument = slot_name,
+                        target = 'character',
+                        arg_name = 'slot_name')
+
             check_string(argument = slot_name,
                          target = names( hm_show(obj = obj, slot_name = 'fill') ),
                          arg_name = 'slot_name')
-            check_length(argument = slot_name, max_allow = 1, arg_name = 'slot_name')
+
+            check_length(argument = slot_name,
+                         max_allow = 1,
+                         arg_name = 'slot_name')
 
             #* NOTE: remember that most of the conditionals (from here)
             #* live inside the agg_table() function
 
             #* col_name
-            check_class(argument = col_name, target = 'character', arg_name = 'col_name')
+            check_class(argument = col_name,
+                        target = 'character',
+                        arg_name = 'col_name')
 
             #* fun
-            check_class(argument = fun, target = 'character', arg_name = 'fun')
+            check_class(argument = fun,
+                        target = 'character',
+                        arg_name = 'fun')
 
             #* period
-            check_class(argument = period, target = 'character', arg_name = 'period')
+            check_class(argument = period,
+                        target = 'character',
+                        arg_name = 'period')
 
             #* out_name
             if( !is.null(out_name) ){
-              check_class(argument = out_name, target = 'character', arg_name = 'out_name')
+              check_class(argument = out_name,
+                          target = 'character',
+                          arg_name = 'out_name')
             }
 
             #* allow_na
-            check_class(argument = allow_na, target = 'numeric', arg_name = 'allow_na')
+            check_class(argument = allow_na,
+                        target = 'numeric',
+                        arg_name = 'allow_na')
 
             #* start_month
-            check_class(argument = start_month, target = 'numeric', arg_name = 'start_month')
+            check_class(argument = start_month,
+                        target = 'numeric',
+                        arg_name = 'start_month')
 
             #* end_month
-            check_class(argument = end_month, target = 'numeric', arg_name = 'end_month')
+            check_class(argument = end_month,
+                        target = 'numeric',
+                        arg_name = 'end_month')
 
             #* relocate
             if( !is.null(relocate) ){
 
-              check_class(argument = relocate, target = 'character', arg_name = 'relocate')
+              check_class(argument = relocate,
+                          target = 'character',
+                          arg_name = 'relocate')
+
               check_string(argument = relocate,
-                           target = slotNames('hydromet_station')[1:23],
+                           target = setdiff(x = slotNames("hydromet_station"),
+                                            y = slotNames("hydromet")
+                                            ),
                            arg_name = 'relocate')
-              check_length(argument = relocate, max_allow = 1, arg_name = 'relocate')
+
+              check_length(argument = relocate,
+                           max_allow = 1,
+                           arg_name = 'relocate')
 
 
             }
 
-            #**************************
+            #*///////////////
             #* function
-            #**************************
+            #*///////////////
 
             table_agg <-
               hm_get(obj = obj, slot_name = slot_name) %>% #* get the table
-              agg_table(col_name = col_name, fun = fun, period = period,
-                        out_name = out_name, allow_na = allow_na,
-                        start_month = start_month, end_month = end_month) #* aggregate table
+              agg_table(col_name = col_name,
+                        fun = fun,
+                        period = period,
+                        out_name = out_name,
+                        allow_na = allow_na,
+                        start_month = start_month,
+                        end_month = end_month) #* aggregate table
 
             # when period = annually agg_table returns a three column table
             if(period == "annually"){
@@ -168,7 +202,8 @@ setMethod(f = 'hm_agg',
             #* set table in the slot
             if( is.null(relocate) ){
               # set it in the same slot
-              out_txt <- paste0('hm_set(obj = obj,', slot_name, '=', 'table_agg', ')')
+              out_txt <- paste0('hm_set(obj = obj,',
+                                slot_name, '=', 'table_agg', ')')
 
             } else {
               # change to another slot
@@ -187,60 +222,88 @@ setMethod(f = 'hm_agg',
           })
 
 
-#' @describeIn hm_agg plot method for compact class
+#' @describeIn hm_agg temporal aggregation method for compact class
 ## compact
 setMethod(f = 'hm_agg',
           signature = 'hydromet_compact',
           definition = function(obj, slot_name, col_name, fun, period, out_name = NULL,
                                 allow_na = 0, start_month = 1, end_month = 12){
-            #**************************
+
+            #*///////////////
             #* conditionals
-            #**************************
+            #*///////////////
+
             #* obj
-            check_class(argument = obj, target = 'hydromet_compact', arg_name = 'obj')
+            check_class(argument = obj,
+                        target = 'hydromet_compact',
+                        arg_name = 'obj')
 
             #* slot_name
-            check_class(argument = slot_name, target = 'character', arg_name = 'slot_name')
+            check_class(argument = slot_name,
+                        target = 'character',
+                        arg_name = 'slot_name')
+
             check_string(argument = slot_name,
                          target = names( hm_show(obj = obj, slot_name = 'fill') ),
                          arg_name = 'slot_name')
-            check_length(argument = slot_name, max_allow = 1, arg_name = 'slot_name')
+
+            check_length(argument = slot_name,
+                         max_allow = 1,
+                         arg_name = 'slot_name')
 
             #* NOTE: remember that most of the conditionals (from here)
             #* live inside the agg_table() function
 
             #* col_name
-            check_class(argument = col_name, target = 'character', arg_name = 'col_name')
+            check_class(argument = col_name,
+                        target = 'character',
+                        arg_name = 'col_name')
 
             #* fun
-            check_class(argument = fun, target = 'character', arg_name = 'fun')
+            check_class(argument = fun,
+                        target = 'character',
+                        arg_name = 'fun')
 
             #* period
-            check_class(argument = period, target = 'character', arg_name = 'period')
+            check_class(argument = period,
+                        target = 'character',
+                        arg_name = 'period')
 
             #* out_name
             if( !is.null(out_name) ){
-              check_class(argument = out_name, target = 'character', arg_name = 'out_name')
+              check_class(argument = out_name,
+                          target = 'character',
+                          arg_name = 'out_name')
             }
 
             #* allow_na
-            check_class(argument = allow_na, target = 'numeric', arg_name = 'allow_na')
+            check_class(argument = allow_na,
+                        target = 'numeric',
+                        arg_name = 'allow_na')
 
             #* start_month
-            check_class(argument = start_month, target = 'numeric', arg_name = 'start_month')
+            check_class(argument = start_month,
+                        target = 'numeric',
+                        arg_name = 'start_month')
 
             #* end_month
-            check_class(argument = end_month, target = 'numeric', arg_name = 'end_month')
+            check_class(argument = end_month,
+                        target = 'numeric',
+                        arg_name = 'end_month')
 
-            #**************************
+            #*///////////////
             #* function
-            #**************************
+            #*///////////////
 
             table_agg <-
               hm_get(obj = obj, slot_name = slot_name) %>% #* get the table
-              agg_table(col_name = col_name, fun = fun, period = period,
-                        out_name = out_name, allow_na = allow_na,
-                        start_month = start_month, end_month = end_month) #* aggregate table
+              agg_table(col_name = col_name,
+                        fun = fun,
+                        period = period,
+                        out_name = out_name,
+                        allow_na = allow_na,
+                        start_month = start_month,
+                        end_month = end_month) #* aggregate table
 
             # when period = annually agg_table returns a three column table
             if(period == "annually"){

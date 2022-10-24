@@ -38,10 +38,10 @@
 #' @param legend_lab string vector with plot label(s) name(s).
 #' @param dual_yaxis string vector suggesting which variables are assign either to
 #'  the \code{'left'} or \code{'right'} y axis.
-#' @param from string value for \code{'Date'} class or \code{POSIXct} class
+#' @param from string value for \code{'Date'} class or \code{POSIXct(lt)} class
 #' for date-time data with the starting \code{Date}. You can use \code{'from'}
 #' without \code{'to'}. In this case you will subset your data \code{'from'} till the end.
-#' @param to string value for \code{'Date'} class or \code{POSIXct} class for date-time
+#' @param to string value for \code{'Date'} class or \code{POSIXct(lt)} class for date-time
 #'  data with the ending \code{Date}. You can use \code{'to'} without \code{'from'}.
 #'  In this case you will subset your data from the beginning till \code{'to'}.
 #' @param scatter string vector (of length two) suggesting which variables goes in
@@ -161,79 +161,124 @@ setMethod(f = 'hm_plot',
                                 legend_lab = NULL, dual_yaxis = NULL,
                                 from = NULL, to = NULL, scatter = NULL)
           {
-            #**************************
+            #*////////////////////////
             #* conditionals
-            #**************************
+            #*////////////////////////
             #*obj
-            check_class(argument = obj, target = 'hydromet_station', arg_name = 'obj')
+            check_class(argument = obj,
+                        target = 'hydromet_station',
+                        arg_name = 'obj')
 
             #*slot_name
-            check_class(argument = slot_name, target = 'character', arg_name = 'slot_name')
-            check_string(argument = slot_name, target = slotNames(x = 'hydromet_station')[1:23],
+            check_class(argument = slot_name,
+                        target = 'character',
+                        arg_name = 'slot_name')
+
+            check_string(argument = slot_name,
+                         target = setdiff(
+                           x = slotNames(x = 'hydromet_station'),
+                           y = slotNames(x = "hydromet")
+                           ),
                          arg_name = 'slot_name')
 
             #*col_name
-            check_class(argument = col_name, target = c('list'), arg_name = 'col_name')
+            check_class(argument = col_name,
+                        target = c('list'),
+                        arg_name = 'col_name')
 
             col_name_vect <- unlist(col_name) # for internal operations
-            check_class(argument = col_name_vect, target = 'character',
+            check_class(argument = col_name_vect,
+                        target = 'character',
                         arg_name = 'col_name internal arguments')
 
               # for check string
             column_names <- list()
             for(i in 1:length(slot_name)){
-              column_names[[i]] <- colnames( hm_get(obj = obj, slot_name = slot_name[i]) )[-1]
+              column_names[[i]] <-
+                colnames( hm_get(obj = obj,
+                                 slot_name = slot_name[i]) )[-1]
             }
-            check_string(argument = col_name_vect, target = unlist(column_names),
+            check_string(argument = col_name_vect,
+                         target = unlist(column_names),
                          arg_name = 'col_name')
 
 
 
             #*interactive
-            check_class(argument = interactive, target = 'logical', arg_name = 'interactive')
-            check_length(argument = interactive, max_allow = 1, arg_name = 'interactive')
+            check_class(argument = interactive,
+                        target = 'logical',
+                        arg_name = 'interactive')
+
+            check_length(argument = interactive,
+                         max_allow = 1,
+                         arg_name = 'interactive')
 
             #*line_type
             if( is.null(scatter) ){
               # line plots
-              check_class(argument = line_type, target = 'character', arg_name = 'line_type')
+              check_class(argument = line_type,
+                          target = 'character',
+                          arg_name = 'line_type')
               if(interactive == FALSE){
                 # ggplot2
-                check_string(argument = line_type, target = c('solid', 'twodash',
-                             'longdash', 'dotted', 'dotdash', 'dashed', 'blank'),
+                check_string(argument = line_type,
+                             target = c('solid', 'twodash',
+                             'longdash', 'dotted',
+                             'dotdash', 'dashed',
+                             'blank'),
                              arg_name = 'line_type')
 
               } else{
                 #plotly
-                check_string(argument = line_type, target = c('lines', 'lines+markers',
+                check_string(argument = line_type,
+                             target = c('lines', 'lines+markers',
                             'markers'),
                              arg_name = 'line_type')
               } # string check
-              check_cross(ref_arg = col_name_vect, eval_arg = line_type,
+              check_cross(ref_arg = col_name_vect,
+                          eval_arg = line_type,
                           arg_names = c('col_name', 'line_type') )
 
             } else{
               # scatter plots
-              check_class(argument = line_type, target = 'numeric', arg_name = 'line_type (point shape)')
-              check_numeric(argument = line_type, target = 0:24, arg_name = 'line_type (point shape)')
-              check_length(argument = line_type, max_allow = 1, arg_name = 'line_type (point shape)')
+              check_class(argument = line_type,
+                          target = 'numeric',
+                          arg_name = 'line_type (point shape)')
+
+              check_numeric(argument = line_type,
+                            target = 0:24,
+                            arg_name = 'line_type (point shape)')
+
+              check_length(argument = line_type,
+                           max_allow = 1,
+                           arg_name = 'line_type (point shape)')
 
             }
 
             #*line_color
-            check_class(argument = line_color, target = 'character', arg_name = 'line_color')
-            check_string(argument = line_color, target = colors(), arg_name = 'line_color')
+            check_class(argument = line_color,
+                        target = 'character',
+                        arg_name = 'line_color')
+
+            check_string(argument = line_color,
+                         target = colors(),
+                         arg_name = 'line_color')
+
             if( is.null(scatter) ){
               # line
-              check_cross(ref_arg = col_name_vect, eval_arg = line_color,
+              check_cross(ref_arg = col_name_vect,
+                          eval_arg = line_color,
                           arg_names = c('col_name', 'line_color'))
             } else{
               # scatter
-              check_length(argument = line_color, max_allow = 1, arg_name = 'line_color (scatter)')
+              check_length(argument = line_color,
+                           max_allow = 1,
+                           arg_name = 'line_color (scatter)')
             }
 
             #*line_size
-            check_class(argument = line_size, target = c('numeric', 'integer'),
+            check_class(argument = line_size,
+                        target = c('numeric', 'integer'),
                         arg_name = 'line_size')
 
               # for valid size values
@@ -244,16 +289,21 @@ setMethod(f = 'hm_plot',
               # for cross validation
             if( is.null(scatter) ){
               # line
-              check_cross(ref_arg = col_name_vect, eval_arg = line_size,
+              check_cross(ref_arg = col_name_vect,
+                          eval_arg = line_size,
                           arg_names = c('col_name', 'line_size'))
             } else{
               # scatter
-              check_length(argument = line_size, max_allow = 1, arg_name = 'line_size (scatter)')
+              check_length(argument = line_size,
+                           max_allow = 1,
+                           arg_name = 'line_size (scatter)')
             }
 
 
             #*line_alpha
-            check_class(argument = line_alpha, target = 'numeric', arg_name = 'line_alpha')
+            check_class(argument = line_alpha,
+                        target = 'numeric',
+                        arg_name = 'line_alpha')
 
             # for valid size values
             check_values <- sum( which(line_alpha < 0 | line_alpha > 1 ) )
@@ -263,62 +313,111 @@ setMethod(f = 'hm_plot',
             # for cross validation
             if( is.null(scatter) ){
               # line
-              check_cross(ref_arg = col_name_vect, eval_arg = line_alpha,
+              check_cross(ref_arg = col_name_vect,
+                          eval_arg = line_alpha,
                           arg_names = c('col_name', 'line_alpha'))
             } else{
               # scatter
-              check_length(argument = line_alpha, max_allow = 1, arg_name = 'line_alpha (scatter)')
+              check_length(argument = line_alpha,
+                           max_allow = 1,
+                           arg_name = 'line_alpha (scatter)')
             }
 
 
             #* xlab
-            check_class(argument = x_lab, target = 'character', arg_name = 'x_lab')
-            check_length(argument = x_lab, max_allow = 1, arg_name = 'x_lab')
+            check_class(argument = x_lab,
+                        target = 'character',
+                        arg_name = 'x_lab')
+
+            check_length(argument = x_lab,
+                         max_allow = 1,
+                         arg_name = 'x_lab')
 
             #* ylab
-            check_class(argument = y_lab, target = 'character', arg_name = 'y_lab')
+            check_class(argument = y_lab,
+                        target = 'character',
+                        arg_name = 'y_lab')
+
             if( is.null(dual_yaxis) ){
               # single y axis
-              check_length(argument = y_lab, max_allow = 1, arg_name = 'y_lab')
+              check_length(argument = y_lab,
+                           max_allow = 1,
+                           arg_name = 'y_lab')
 
             } else{
               # dual y axis
-              check_length(argument = y_lab, max_allow = 2, arg_name = 'y_lab')
+              check_length(argument = y_lab,
+                           max_allow = 2,
+                           arg_name = 'y_lab')
             }
 
             #* title_lab
-            check_class(argument = title_lab, target = 'character', arg_name = 'title_lab')
-            check_length(argument = title_lab, max_allow = 1, arg_name = 'title_lab')
+            check_class(argument = title_lab,
+                        target = 'character',
+                        arg_name = 'title_lab')
+
+            check_length(argument = title_lab,
+                         max_allow = 1,
+                         arg_name = 'title_lab')
 
 
             #* legend_lab
-            check_class(argument = legend_lab, target = 'character', arg_name = 'legend_lab')
-            check_cross(ref_arg = col_name_vect, eval_arg = legend_lab,
+            check_class(argument = legend_lab,
+                        target = 'character',
+                        arg_name = 'legend_lab')
+
+            check_cross(ref_arg = col_name_vect,
+                        eval_arg = legend_lab,
                         arg_names = c('col_name', 'legend_lab'))
 
             #* dual_yaxis
-            check_class(argument = dual_yaxis, target = 'character', arg_name = 'dual_yaxis')
-            check_string(argument = dual_yaxis, target = c('left', 'right'), arg_name = 'dual_yaxis')
-            check_cross(ref_arg = col_name_vect, eval_arg = dual_yaxis,
+            check_class(argument = dual_yaxis,
+                        target = 'character',
+                        arg_name = 'dual_yaxis')
+
+            check_string(argument = dual_yaxis,
+                         target = c('left', 'right'),
+                         arg_name = 'dual_yaxis')
+
+            check_cross(ref_arg = col_name_vect,
+                        eval_arg = dual_yaxis,
                         arg_names = c('col_name', 'dual_yaxis'))
 
             #* from
-            check_class(argument = from, target = c('character', 'POSIXct'), arg_name = 'from')
-            check_length(argument = from, max_allow = 1, arg_name = 'from')
+            check_class(argument = from,
+                        target = c('character', 'POSIXct', "POSIXlt"),
+                        arg_name = 'from')
+
+            check_length(argument = from,
+                         max_allow = 1,
+                         arg_name = 'from')
 
             #* to
-            check_class(argument = to, target = c('character', 'POSIXct'), arg_name = 'to')
-            check_length(argument = to, max_allow = 1, arg_name = 'to')
+            check_class(argument = to,
+                        target = c('character', 'POSIXct', "POSIXlt"),
+                        arg_name = 'to')
+            check_length(argument = to,
+                         max_allow = 1,
+                         arg_name = 'to')
 
             #* scatter
-            check_class(argument = scatter, target = 'character', arg_name = 'scatter')
-            check_string(argument = scatter, target = c('x', 'y'), arg_name = 'scatter')
-            check_cross(ref_arg = col_name_vect, eval_arg = scatter, arg_names = 'scatter')
+            check_class(argument = scatter,
+                        target = 'character',
+                        arg_name = 'scatter')
+
+            check_string(argument = scatter,
+                         target = c('x', 'y'),
+                         arg_name = 'scatter')
+
+            check_cross(ref_arg = col_name_vect,
+                        eval_arg = scatter,
+                        arg_names = 'scatter')
 
 
-            #**************************
+            #*/////////////////////////
             #* set default arg values
-            #**************************
+            #*/////////////////////////
+
             #* line_type
             if( is.null(line_type) ){
 
@@ -327,11 +426,13 @@ setMethod(f = 'hm_plot',
 
                 if(interactive == FALSE){
                   # ggplot2
-                  line_type <- rep('solid', length(col_name_vect))
+                  line_type <- rep('solid',
+                                   length(col_name_vect))
 
                 } else {
                   # plotly
-                  line_type <- rep('lines', length(col_name_vect))
+                  line_type <- rep('lines',
+                                   length(col_name_vect))
 
                 }
 
@@ -401,12 +502,16 @@ setMethod(f = 'hm_plot',
             }
 
 
-            #**************************
+            #*/////////////////////////
             #* function
-            #**************************
+            #*/////////////////////////
             #* build classic table (subsetted)
-            c_table <- build_table(hm_obj = obj, slot_name = slot_name,
-                                   col_name = col_name, from = from, to = to)
+            c_table <-
+              build_table(hm_obj = obj,
+                          slot_name = slot_name,
+                          col_name = col_name,
+                          from = from,
+                          to = to)
 
 
             #* is it interactive?
@@ -546,9 +651,13 @@ setMethod(f = 'hm_plot',
                   # build graphs without axis labels
                   for(i in 1:n_plots){
                     ppout <- ppout %>%
-                      add_trace(y = c_table[ , (i + 1)], name = legend_lab[i],
-                                type = 'scatter', mode = line_type[i], color = I(line_color[i]),
-                                line = list( width = line_size[i]), opacity = line_alpha[i] )
+                      add_trace(y = c_table[ , (i + 1)],
+                                name = legend_lab[i],
+                                type = 'scatter',
+                                mode = line_type[i],
+                                color = I(line_color[i]),
+                                line = list( width = line_size[i]),
+                                opacity = line_alpha[i] )
 
                   }# end for
 
@@ -657,22 +766,32 @@ setMethod(f = 'hm_plot',
                                 legend_lab = NULL, dual_yaxis = NULL,
                                 from = NULL, to = NULL, scatter = NULL)
           {
-            #**************************
+            #*/////////////////
             #* conditionals
-            #**************************
+            #*/////////////////
+
             #*obj
-            check_class(argument = obj, target = 'hydromet_compact', arg_name = 'obj')
+            check_class(argument = obj,
+                        target = 'hydromet_compact',
+                        arg_name = 'obj')
 
             #*slot_name
-            check_class(argument = slot_name, target = 'character', arg_name = 'slot_name')
-            check_string(argument = slot_name, target = 'compact',
+            check_class(argument = slot_name,
+                        target = 'character',
+                        arg_name = 'slot_name')
+
+            check_string(argument = slot_name,
+                         target = 'compact',
                          arg_name = 'slot_name')
 
             #*col_name
-            check_class(argument = col_name, target = c('list'), arg_name = 'col_name')
+            check_class(argument = col_name,
+                        target = c('list'),
+                        arg_name = 'col_name')
 
             col_name_vect <- unlist(col_name) # for internal operations
-            check_class(argument = col_name_vect, target = 'character',
+            check_class(argument = col_name_vect,
+                        target = 'character',
                         arg_name = 'col_name internal arguments')
 
             # for check string
@@ -686,50 +805,81 @@ setMethod(f = 'hm_plot',
 
 
             #*interactive
-            check_class(argument = interactive, target = 'logical', arg_name = 'interactive')
-            check_length(argument = interactive, max_allow = 1, arg_name = 'interactive')
+            check_class(argument = interactive,
+                        target = 'logical',
+                        arg_name = 'interactive')
+
+            check_length(argument = interactive,
+                         max_allow = 1,
+                         arg_name = 'interactive')
 
             #*line_type
             if( is.null(scatter) ){
               # line plots
-              check_class(argument = line_type, target = 'character', arg_name = 'line_type')
+              check_class(argument = line_type,
+                          target = 'character',
+                          arg_name = 'line_type')
+
               if(interactive == FALSE){
                 # ggplot2
-                check_string(argument = line_type, target = c('solid', 'twodash',
-                                                              'longdash', 'dotted', 'dotdash', 'dashed', 'blank'),
+                check_string(argument = line_type,
+                             target = c('solid', 'twodash',
+                                        'longdash', 'dotted',
+                                        'dotdash', 'dashed',
+                                        'blank'),
                              arg_name = 'line_type')
 
               } else{
                 #plotly
-                check_string(argument = line_type, target = c('lines', 'lines+markers',
-                                                              'markers'),
+                check_string(argument = line_type,
+                             target = c('lines', 'lines+markers',
+                                        'markers'),
                              arg_name = 'line_type')
               } # string check
-              check_cross(ref_arg = col_name_vect, eval_arg = line_type,
+              check_cross(ref_arg = col_name_vect,
+                          eval_arg = line_type,
                           arg_names = c('col_name', 'line_type') )
 
             } else{
               # scatter plots
-              check_class(argument = line_type, target = 'numeric', arg_name = 'line_type (point shape)')
-              check_numeric(argument = line_type, target = 0:24, arg_name = 'line_type (point shape)')
-              check_length(argument = line_type, max_allow = 1, arg_name = 'line_type (point shape)')
+              check_class(argument = line_type,
+                          target = 'numeric',
+                          arg_name = 'line_type (point shape)')
+
+              check_numeric(argument = line_type,
+                            target = 0:24,
+                            arg_name = 'line_type (point shape)')
+
+              check_length(argument = line_type,
+                           max_allow = 1,
+                           arg_name = 'line_type (point shape)')
 
             }
 
             #*line_color
-            check_class(argument = line_color, target = 'character', arg_name = 'line_color')
-            check_string(argument = line_color, target = colors(), arg_name = 'line_color')
+            check_class(argument = line_color,
+                        target = 'character',
+                        arg_name = 'line_color')
+
+            check_string(argument = line_color,
+                         target = colors(),
+                         arg_name = 'line_color')
+
             if( is.null(scatter) ){
               # line
-              check_cross(ref_arg = col_name_vect, eval_arg = line_color,
+              check_cross(ref_arg = col_name_vect,
+                          eval_arg = line_color,
                           arg_names = c('col_name', 'line_color'))
             } else{
               # scatter
-              check_length(argument = line_color, max_allow = 1, arg_name = 'line_color (scatter)')
+              check_length(argument = line_color,
+                           max_allow = 1,
+                           arg_name = 'line_color (scatter)')
             }
 
             #*line_size
-            check_class(argument = line_size, target = c('numeric', 'integer'),
+            check_class(argument = line_size,
+                        target = c('numeric', 'integer'),
                         arg_name = 'line_size')
 
             # for valid size values
@@ -740,16 +890,21 @@ setMethod(f = 'hm_plot',
             # for cross validation
             if( is.null(scatter) ){
               # line
-              check_cross(ref_arg = col_name_vect, eval_arg = line_size,
+              check_cross(ref_arg = col_name_vect,
+                          eval_arg = line_size,
                           arg_names = c('col_name', 'line_size'))
             } else{
               # scatter
-              check_length(argument = line_size, max_allow = 1, arg_name = 'line_size (scatter)')
+              check_length(argument = line_size,
+                           max_allow = 1,
+                           arg_name = 'line_size (scatter)')
             }
 
 
             #*line_alpha
-            check_class(argument = line_alpha, target = 'numeric', arg_name = 'line_alpha')
+            check_class(argument = line_alpha,
+                        target = 'numeric',
+                        arg_name = 'line_alpha')
 
             # for valid size values
             check_values <- sum( which(line_alpha < 0 | line_alpha > 1 ) )
@@ -759,62 +914,112 @@ setMethod(f = 'hm_plot',
             # for cross validation
             if( is.null(scatter) ){
               # line
-              check_cross(ref_arg = col_name_vect, eval_arg = line_alpha,
+              check_cross(ref_arg = col_name_vect,
+                          eval_arg = line_alpha,
                           arg_names = c('col_name', 'line_alpha'))
             } else{
               # scatter
-              check_length(argument = line_alpha, max_allow = 1, arg_name = 'line_alpha (scatter)')
+              check_length(argument = line_alpha,
+                           max_allow = 1,
+                           arg_name = 'line_alpha (scatter)')
             }
 
 
             #* xlab
-            check_class(argument = x_lab, target = 'character', arg_name = 'x_lab')
-            check_length(argument = x_lab, max_allow = 1, arg_name = 'x_lab')
+            check_class(argument = x_lab,
+                        target = 'character',
+                        arg_name = 'x_lab')
+
+            check_length(argument = x_lab,
+                         max_allow = 1,
+                         arg_name = 'x_lab')
 
             #* ylab
-            check_class(argument = y_lab, target = 'character', arg_name = 'y_lab')
+            check_class(argument = y_lab,
+                        target = 'character',
+                        arg_name = 'y_lab')
+
             if( is.null(dual_yaxis) ){
               # single y axis
-              check_length(argument = y_lab, max_allow = 1, arg_name = 'y_lab')
+              check_length(argument = y_lab,
+                           max_allow = 1,
+                           arg_name = 'y_lab')
 
             } else{
               # dual y axis
-              check_length(argument = y_lab, max_allow = 2, arg_name = 'y_lab')
+              check_length(argument = y_lab,
+                           max_allow = 2,
+                           arg_name = 'y_lab')
             }
 
             #* title_lab
-            check_class(argument = title_lab, target = 'character', arg_name = 'title_lab')
-            check_length(argument = title_lab, max_allow = 1, arg_name = 'title_lab')
+            check_class(argument = title_lab,
+                        target = 'character',
+                        arg_name = 'title_lab')
+
+            check_length(argument = title_lab,
+                         max_allow = 1,
+                         arg_name = 'title_lab')
 
 
             #* legend_lab
-            check_class(argument = legend_lab, target = 'character', arg_name = 'legend_lab')
-            check_cross(ref_arg = col_name_vect, eval_arg = legend_lab,
+            check_class(argument = legend_lab,
+                        target = 'character',
+                        arg_name = 'legend_lab')
+
+            check_cross(ref_arg = col_name_vect,
+                        eval_arg = legend_lab,
                         arg_names = c('col_name', 'legend_lab'))
 
             #* dual_yaxis
-            check_class(argument = dual_yaxis, target = 'character', arg_name = 'dual_yaxis')
-            check_string(argument = dual_yaxis, target = c('left', 'right'), arg_name = 'dual_yaxis')
-            check_cross(ref_arg = col_name_vect, eval_arg = dual_yaxis,
+            check_class(argument = dual_yaxis,
+                        target = 'character',
+                        arg_name = 'dual_yaxis')
+
+            check_string(argument = dual_yaxis,
+                         target = c('left', 'right'),
+                         arg_name = 'dual_yaxis')
+
+            check_cross(ref_arg = col_name_vect,
+                        eval_arg = dual_yaxis,
                         arg_names = c('col_name', 'dual_yaxis'))
 
             #* from
-            check_class(argument = from, target = c('character', 'POSIXct'), arg_name = 'from')
-            check_length(argument = from, max_allow = 1, arg_name = 'from')
+            check_class(argument = from,
+                        target = c('character', 'POSIXct', "POSIXlt"),
+                        arg_name = 'from')
+
+            check_length(argument = from,
+                         max_allow = 1,
+                         arg_name = 'from')
 
             #* to
-            check_class(argument = to, target = c('character', 'POSIXct'), arg_name = 'to')
-            check_length(argument = to, max_allow = 1, arg_name = 'to')
+            check_class(argument = to,
+                        target = c('character', 'POSIXct', "POSIXlt"),
+                        arg_name = 'to')
+
+            check_length(argument = to,
+                         max_allow = 1,
+                         arg_name = 'to')
 
             #* scatter
-            check_class(argument = scatter, target = 'character', arg_name = 'scatter')
-            check_string(argument = scatter, target = c('x', 'y'), arg_name = 'scatter')
-            check_cross(ref_arg = col_name_vect, eval_arg = scatter, arg_names = 'scatter')
+            check_class(argument = scatter,
+                        target = 'character',
+                        arg_name = 'scatter')
+
+            check_string(argument = scatter,
+                         target = c('x', 'y'),
+                         arg_name = 'scatter')
+
+            check_cross(ref_arg = col_name_vect,
+                        eval_arg = scatter,
+                        arg_names = 'scatter')
 
 
-            #**************************
+            #*/////////////////////////
             #* set default arg values
-            #**************************
+            #*/////////////////////////
+
             #* line_type
             if( is.null(line_type) ){
 
@@ -897,12 +1102,17 @@ setMethod(f = 'hm_plot',
             }
 
 
-            #**************************
+            #*///////////////
             #* function
-            #**************************
+            #*///////////////
+
             #* build classic table (subsetted)
-            c_table <- build_table(hm_obj = obj, slot_name = slot_name,
-                                   col_name = col_name, from = from, to = to)
+            c_table <-
+              build_table(hm_obj = obj,
+                          slot_name = slot_name,
+                          col_name = col_name,
+                          from = from,
+                          to = to)
 
 
             #* is it interactive?
@@ -919,9 +1129,12 @@ setMethod(f = 'hm_plot',
                   #* single y axis
 
                   #* transform to ggplot table
-                  gg_table <- ggplot_table(df = c_table, l_color = line_color,
-                                           l_type = line_type, l_size = line_size,
-                                           l_legend = legend_lab)
+                  gg_table <-
+                    ggplot_table(df = c_table,
+                                 l_color = line_color,
+                                 l_type = line_type,
+                                 l_size = line_size,
+                                 l_legend = legend_lab)
 
                   #* ggplot2 object
                   gg_out <-

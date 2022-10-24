@@ -102,11 +102,11 @@ argument you must supply both \code{c('ylab', 'y2lab')}.}
 \item{dual_yaxis}{string vector suggesting which variables are assign either to
 the \code{'left'} or \code{'right'} y axis.}
 
-\item{from}{string value for \code{'Date'} class or \code{POSIXct} class
+\item{from}{string value for \code{'Date'} class or \code{POSIXct(lt)} class
 for date-time data with the starting \code{Date}. You can use \code{'from'}
 without \code{'to'}. In this case you will subset your data \code{'from'} till the end.}
 
-\item{to}{string value for \code{'Date'} class or \code{POSIXct} class for date-time
+\item{to}{string value for \code{'Date'} class or \code{POSIXct(lt)} class for date-time
 data with the ending \code{Date}. You can use \code{'to'} without \code{'from'}.
 In this case you will subset your data from the beginning till \code{'to'}.}
 
@@ -124,11 +124,11 @@ This method allows you to make plots (using simple and expressive arguments)
 }
 \section{Functions}{
 \itemize{
-\item \code{hm_plot,hydromet_station-method}: plot method for station class
+\item \code{hm_plot(hydromet_station)}: plot method for station class
 
-\item \code{hm_plot,hydromet_compact-method}: plot method for compact class
+\item \code{hm_plot(hydromet_compact)}: plot method for compact class
+
 }}
-
 \examples{
 \dontrun{
 # lets work with the cuevas station

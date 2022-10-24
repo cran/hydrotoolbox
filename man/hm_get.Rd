@@ -28,15 +28,15 @@ Get the table (or metadata) that you want from an \code{hydromet} or \code{hydro
 }
 \section{Functions}{
 \itemize{
-\item \code{hm_get,hydromet-method}: get method for generic hydromet object
+\item \code{hm_get(hydromet)}: get method for generic hydromet object
 
-\item \code{hm_get,hydromet_station-method}: get method for station class
+\item \code{hm_get(hydromet_station)}: get method for station class
 
-\item \code{hm_get,hydromet_compact-method}: get method for compact class
+\item \code{hm_get(hydromet_compact)}: get method for compact class
+
 }}
-
 \examples{
-
+\dontrun{
 # set path to file
 path_file <- system.file('extdata', 'ianigla_cuevas.csv',
              package = 'hydrotoolbox')
@@ -55,5 +55,6 @@ hm_cuevas <-
 
 # now extract the slot of air temperature
 head( hm_get(obj = hm_cuevas, slot_name = 'tair') )
+}
 
 }

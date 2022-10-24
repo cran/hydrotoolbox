@@ -1,4 +1,4 @@
-context("cum_sum")
+#context("cum_sum")
 
 # set path to file
 path <- system.file('extdata', 'ianigla_cuevas.csv',

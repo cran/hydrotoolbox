@@ -39,11 +39,13 @@ library(hydrotoolbox)
 #  # the streamflow and water height series
 #  guido <-
 #    hm_create() %>% # create the met-station
-#    hm_build(bureau = 'snih', path = path,
-#             file_name = c('snih_hq_guido.xlsx',
-#             'snih_qd_guido.xlsx'),
-#             slot_name = c('hq', 'qd'),
-#             by = c('none', 'day') )
+#    hm_build_generic(path = path,
+#                     file_name = c('snih_qd_guido.xlsx'),
+#                     slot_name = c('qd'),
+#                     FUN = read_excel,
+#                     by = c('day'),
+#                     sheet = 1L
+#                     )
 #  
 #  # we can explore the data-set inside it by using hm_show
 #  guido %>% hm_show()
@@ -124,13 +126,14 @@ library(hydrotoolbox)
 #  # dgi file
 #  toscas <-
 #    hm_create() %>%
-#    hm_build(bureau = 'dgi', path = path,
-#             file_name = 'dgi_toscas.xlsx',
-#             slot_name = c('swe', 'tmax',
-#             'tmin', 'tmean', 'rh', 'patm'),
-#             by = 'day',
-#             out_name = c('swe', 'tmax',
-#             'tmin', 'tmean', 'rh', 'patm') )
+#    hm_build_generic(path = path,
+#                     file_name = 'dgi_toscas.xlsx',
+#                     slot_name = c('swe', 'tmax',
+#                                   'tmin', 'tmean',
+#                                   'rh', 'patm'),
+#                     by = 'day',
+#                     FUN = read_dgi,
+#                     sheet = 1L:6L )
 #  
 #  # now we melt the required data in a new object
 #  hm_create(class_name = 'compact') %>%

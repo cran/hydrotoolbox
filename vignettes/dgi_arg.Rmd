@@ -24,33 +24,46 @@ library(hydrotoolbox)
 
 ## DGI dataset
 
-El Departamento General de Irrigación (DGI) es la institución encargada de la gestión del agua
-en la provincia de Mendoza. Su división de hidrología es la encargada de monitorear la evolución
-de la nieve en la zona de alta montaña. En esta viñeta describo la función para leer los datos
+El Departamento General de Irrigación (DGI) es la
+institución encargada de la gestión del agua
+en la provincia de Mendoza. Su división de hidrología
+es la encargada de monitorear la evolución
+de la nieve en la zona de alta montaña. En esta viñeta
+describo la función para leer los datos
 provenientes de las estaciones nivo-meteorológicas. 
 
 ***
 
-The *Departamento General de Irrigación* (DGI) is the institution in charge of water management
-in the province of Mendoza. Its hydrological division is in charge of monitoring the evolution
-of snowpack in the high mountain area. In this bullet I describe the function to read the data
+The *Departamento General de Irrigación* (DGI) is the
+institution in charge of water management
+in the province of Mendoza. Its hydrological division
+is in charge of monitoring the evolution
+of snowpack in the high mountain area. In this bullet I
+describe the function to read the data
 from the snow-meteorological stations.
 
 ## Reading individual files
 
-El paquete **hydrotoolbox** ofrece la posibilidad de leer estos archivos 
-(formato *.xlsx*) de manera automática mediante la función `read_dgi()`. Al hacerlo, se cargará
-al *Global Environment* de **R** un `data.frame` con los datos del archivo original. Cabe destacar
-que esta función rellena automáticamente los vacíos existentes entre registros con `NA_real_`.
-Las siguientes líneas de código muestran cómo aplicar esta función con la estación Toscas.
+El paquete **hydrotoolbox** ofrece la posibilidad
+de leer estos archivos (formato *.xlsx*) de manera
+automática mediante la función `read_dgi()`. Al hacerlo,
+se cargará al *Global Environment* de **R** un `data.frame`
+con los datos del archivo original. Cabe destacar
+que esta función rellena automáticamente los vacíos
+existentes entre registros con `NA_real_`. Las siguientes
+líneas de código muestran cómo aplicar esta función con
+la estación Toscas.
 
 ***
 
-The **hydrotoolbox** package offers the ability to read these files (*.xlsx* format) automatically
-using the `read_dgi()` function. Doing so will load to the *Global Environment* the original 
-series as `data.frame`. It should be noted that this function automatically fills the gaps between
-records with `NA_real_`. The following lines of code show how to apply this function with the
-Toscas station.
+The **hydrotoolbox** package offers the ability
+to read these files (*.xlsx* format) automatically
+using the `read_dgi()` function. Doing so will load
+to the *Global Environment* the original 
+series as `data.frame`. It should be noted that this
+function automatically fills the gaps between
+records with `NA_real_`. The following lines of code
+show how to apply this function with the Toscas station.
 
 ```{r read_fun, eval=FALSE, fig.width = 6, fig.height = 4}
 # set path to file
@@ -68,51 +81,74 @@ head( read_dgi(path = path_file, sheet = 'swe') )
 head( read_dgi(path = path_file, sheet = 'swe', out_name = 'swe(mm)') )
 ```
 
-Si bien esta función resulta de gran utilidad, a medida que la cantidad de variables a analizar
-crece, cargar estas tablas, ordenarlas y modificarlas, se vuelve tarea complicada. La solución
-que ofrece **hydrotoolbox** es la de trabajar con los objetos y métodos que el paquete provee. 
+Si bien esta función resulta de gran utilidad, a medida
+que la cantidad de variables a analizar
+crece, cargar estas tablas, ordenarlas y modificarlas,
+se vuelve tarea complicada. La solución
+que ofrece **hydrotoolbox** es la de trabajar con los
+objetos y métodos que el paquete provee. 
 En las siguientes secciones muestro cómo usarlos. 
 
 ***
  
-Although this function is very useful, as the number of variables to be analyzed
-grows, loading these tables, ordering and modifying them becomes a complicated task. 
-The solution that **hydrotoolbox** offers is to work with the objects and methods 
-that the package provides. In the following sections I will show you how to use them.
+Although this function is very useful, as the number
+of variables to be analyzed
+grows, loading these tables, ordering and modifying them
+becomes a complicated task. 
+The solution that **hydrotoolbox** offers is to work with
+the objects and methods 
+that the package provides. In the following sections I will
+show you how to use them.
 
 
 ## Using classes and methods to build a meteorological station
 
-Como menciono en los principios de diseño de este paquete (`vignette('package_overview', package = 'hydrotoolbox')`), los datos que se registran en las estaciones deben almacenarse en un mismo
-objeto. Por ello primero habrá que crear dicho objeto (o estación hidro-meteorológica) y luego
-usar `hm_build()`, un método que permite cargar automáticamente al objeto todas las variables
+Como menciono en los principios de diseño de este paquete
+(`vignette('package_overview', package = 'hydrotoolbox')`), 
+los datos que se registran en las estaciones deben almacenarse en un mismo
+objeto. Por ello primero habrá que crear dicho objeto (o estación 
+hidro-meteorológica) y luego
+usar `hm_build_generic()`, un método que permite cargar automáticamente
+al objeto todas las variables
 que la estación real registra. 
 
 ***
 
-As I mentioned in the design principles of this package (`vignette ('package_overview', package = 'hydrotoolbox')`), the data that is recorded in the stations must be stored in the same
-object. For this reason, you must first create the object (or hydro-meteorological station) and
-then use `hm_build()`, a method that allows you to automatically load all variables to the object
+As I mentioned in the design principles of this package
+(`vignette ('package_overview', package = 'hydrotoolbox')`),
+the data that is recorded in the stations must be stored in the same
+object. For this reason, you must first create the object
+(or hydro-meteorological station) and then use 
+`hm_build_generic()`, a method that allows you to 
+automatically load all variables to the object
 that the real world station records.
 
 ```{r build, eval = FALSE, fig.width = 6, fig.height = 4}
+library(readxl)
 # path to all example files
 path <- system.file('extdata', package = 'hydrotoolbox')
 
 # dgi file
 toscas <- 
   hm_create() %>%
-  hm_build(bureau = 'dgi', path = path,
-           file_name = 'dgi_toscas.xlsx',
-           slot_name = c('swe', 'tmax',
-           'tmin', 'tmean', 'rh', 'patm'),
-           by = 'day' ) 
+  hm_build_generic(path = path,
+                   file_name = 'dgi_toscas.xlsx',
+                   slot_name = c('swe', 'tmax',
+                                 'tmin', 'tmean',
+                                 'rh', 'patm'),
+                   by = 'day', 
+                   FUN = read_dgi, 
+                   sheet = 1L:6L ) 
 ```
 
-Dado que la función constructora es la única que difiere de lo desarrollado para 
-los datos del SNIH, recomiendo (re)visitar esta viñeta (`vignette('snih_arg', package = 'hydrotoolbox')`)
+Dado que la función constructora es la única que
+difiere de lo desarrollado para 
+los datos del SNIH, recomiendo (re)visitar esta viñeta
+(`vignette('snih_arg', package = 'hydrotoolbox')`)
 
 ***
 
-Since the constructor function is the only one that differs from what was developed for
-SNIH data, I recommend (re)visiting this vignette (`vignette ('snih_arg', package = 'hydrotoolbox')`)
+Since the constructor function is the only one
+that differs from what was developed for
+SNIH data, I recommend (re)visiting this vignette
+(`vignette ('snih_arg', package = 'hydrotoolbox')`)

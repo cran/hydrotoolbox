@@ -23,15 +23,19 @@ library(hydrotoolbox)
 #  head( read_dgi(path = path_file, sheet = 'swe', out_name = 'swe(mm)') )
 
 ## ----build, eval = FALSE, fig.width = 6, fig.height = 4-----------------------
+#  library(readxl)
 #  # path to all example files
 #  path <- system.file('extdata', package = 'hydrotoolbox')
 #  
 #  # dgi file
 #  toscas <-
 #    hm_create() %>%
-#    hm_build(bureau = 'dgi', path = path,
-#             file_name = 'dgi_toscas.xlsx',
-#             slot_name = c('swe', 'tmax',
-#             'tmin', 'tmean', 'rh', 'patm'),
-#             by = 'day' )
+#    hm_build_generic(path = path,
+#                     file_name = 'dgi_toscas.xlsx',
+#                     slot_name = c('swe', 'tmax',
+#                                   'tmin', 'tmean',
+#                                   'rh', 'patm'),
+#                     by = 'day',
+#                     FUN = read_dgi,
+#                     sheet = 1L:6L )
 

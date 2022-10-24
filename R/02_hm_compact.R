@@ -20,13 +20,18 @@
 #'
 #' @export
 #'
+#' @examples
+#' \dontrun{
+#' # create an compact station
+#' hm_create(class_name = "compact")
+#'}
 hydromet_compact <- setClass(
   # class name
   'hydromet_compact',
 
   # new slots
   slots = c(
-    compact  = 'data.frame' # Date | ...(all the other numeric variables)
+    compact  = "ANY" # Date | ...
     ),
 
   # default values
@@ -36,20 +41,45 @@ hydromet_compact <- setClass(
   validity = function(object)
   {
     # slot validation
-    if( dim(object@compact)[1] != 0 ){
-      if(class(object@compact) != 'data.frame'){return('compact class must be data.frame')}
-      if(class(object@compact[ , 1])[1] != 'Date'){
-        if(class(object@compact[ , 1])[1] != 'POSIXct'){
-          return('compact[ , 1] class must be Date or POSIXct')
-        }
-      }
-      if(typeof( as.matrix(object@compact[ , -1, drop = FALSE])  ) != 'double'){return('compact[ , -1] elements must be of double type')}
+
+    # new validation
+    if( !is.null(object@compact) ){
+      # admito tibbles porque internamente
+      # check_class() usa match()
+      check_class(argument = object@compact,
+                  target = c("tbl_df", "tbl", "data.frame"),
+                  arg_name = "compact")
+
+      # admito POSIXlt
+      check_class(argument = object@compact[ , 1, drop = TRUE],
+                  target = c("Date", "POSIXct", "POSIXlt"),
+                  arg_name = "compact[ , 1]")
+
     }
+
+    # old validation
+    # if( dim(object@compact)[1] != 0 ){
+    #   # check_class(argument = object@compact,
+    #   #             target = "data.frame",
+    #   #             arg_name = "compact")
+    #   #
+    #   # check_class(argument = object@compact[ , 1, drop = TRUE],
+    #   #             target = c("Date", "POSIXct", "POSIXlt"),
+    #   #             arg_name = "compact[ , 1]")
+    #   if(class(object@compact) != 'data.frame'){return('compact class must be data.frame')}
+    #   if(class(object@compact[ , 1])[1] != 'Date'){
+    #     if(class(object@compact[ , 1])[1] != 'POSIXct'){
+    #       return('compact[ , 1] class must be Date or POSIXct')
+    #     }
+    #   }
+    #   if(typeof( as.matrix(object@compact[ , -1, drop = FALSE])  ) != 'double'){
+    #     return('compact[ , -1] elements must be of double type')}
+    # }
 
 
     return(TRUE)
   },
 
   # set the inheritance for this class
-  contains = 'hydromet'
+  contains = "hydromet"
 )

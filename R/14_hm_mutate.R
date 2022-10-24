@@ -27,7 +27,7 @@
 #' @export
 #'
 #' @examples
-#'
+#' \dontrun{
 #' # path to all example files
 #' path <- system.file('extdata', package = 'hydrotoolbox')
 #'
@@ -52,7 +52,7 @@
 #'          line_color = c('dodgerblue', 'red3'),
 #'          y_lab = 'Q(m3/s)',
 #'          legend_lab = c('original', 'mov_avg')  )
-#'
+#'}
 #'
 #'
 setGeneric(name = 'hm_mutate',
@@ -67,36 +67,52 @@ setGeneric(name = 'hm_mutate',
 setMethod(f = 'hm_mutate',
           signature = 'hydromet_station',
           definition = function(obj, slot_name, FUN, ...){
-            #**************************
+
+            #*//////////////////
             #* conditionals
-            #**************************
+            #*//////////////////
             #* obj
-            check_class(argument = obj, target = 'hydromet_station', arg_name = 'obj')
+            check_class(argument = obj,
+                        target = 'hydromet_station',
+                        arg_name = 'obj')
 
             #* slot_name
-            check_class(argument = slot_name, target = 'character', arg_name = 'slot_name')
+            check_class(argument = slot_name,
+                        target = 'character',
+                        arg_name = 'slot_name')
+
             check_string(argument = slot_name,
-                         target = slotNames('hydromet_station')[1:23],
+                         target = setdiff(x = slotNames("hydromet_station"),
+                                          y = slotNames("hydromet")),
                          arg_name = 'slot_name')
-            check_length(argument = slot_name, max_allow = 1, arg_name = slot_name)
+
+            check_length(argument = slot_name,
+                         max_allow = 1,
+                         arg_name = slot_name)
 
             #* FUN
-            check_class(argument = FUN, target = 'function', arg_name = 'FUN')
+            check_class(argument = FUN,
+                        target = 'function',
+                        arg_name = 'FUN')
 
 
-            #**************************
+            #*//////////////////
             #* function
-            #**************************
+            #*//////////////////
+
             #* get table
             table_slot <- hm_get(obj = obj, slot_name = slot_name)
 
             #* apply fun
             table_mod  <- FUN(table_slot, ...)
 
-            check_class(argument = table_mod, target = 'data.frame', arg_name = 'FUN output')
+            check_class(argument = table_mod,
+                        target = c("tbl_df", "tbl", "data.frame"),
+                        arg_name = 'FUN output')
 
             #* set new table
-            out_txt <- paste0('hm_set(obj = obj,', slot_name, '=', 'table_mod', ')')
+            out_txt <- paste0('hm_set(obj = obj,',
+                              slot_name, '=', 'table_mod', ')')
             obj     <- eval( parse(text = out_txt) )
 
             #* return
@@ -112,36 +128,52 @@ setMethod(f = 'hm_mutate',
 setMethod(f = 'hm_mutate',
           signature = 'hydromet_compact',
           definition = function(obj, slot_name, FUN, ...){
-            #**************************
+
+            #*//////////////////
             #* conditionals
-            #**************************
+            #*//////////////////
             #* obj
-            check_class(argument = obj, target = 'hydromet_compact', arg_name = 'obj')
+            check_class(argument = obj,
+                        target = 'hydromet_compact',
+                        arg_name = 'obj')
 
             #* slot_name
-            check_class(argument = slot_name, target = 'character', arg_name = 'slot_name')
+            check_class(argument = slot_name,
+                        target = 'character',
+                        arg_name = 'slot_name')
+
             check_string(argument = slot_name,
                          target = 'compact',
                          arg_name = 'slot_name')
-            check_length(argument = slot_name, max_allow = 1, arg_name = slot_name)
+
+            check_length(argument = slot_name,
+                         max_allow = 1,
+                         arg_name = slot_name)
 
             #* FUN
-            check_class(argument = FUN, target = 'function', arg_name = 'FUN')
+            check_class(argument = FUN,
+                        target = 'function',
+                        arg_name = 'FUN')
 
 
-            #**************************
+            #*//////////////////
             #* function
-            #**************************
+            #*//////////////////
+
             #* get table
-            table_slot <- hm_get(obj = obj, slot_name = slot_name)
+            table_slot <- hm_get(obj = obj,
+                                 slot_name = slot_name)
 
             #* apply fun
             table_mod  <- FUN(table_slot, ...)
 
-            check_class(argument = table_mod, target = 'data.frame', arg_name = 'FUN output')
+            check_class(argument = table_mod,
+                        target = c("tbl_df", "tbl", "data.frame"),
+                        arg_name = 'FUN output')
 
             #* set new table
-            out_txt <- paste0('hm_set(obj = obj,', slot_name, '=', 'table_mod', ')')
+            out_txt <- paste0('hm_set(obj = obj,',
+                              slot_name, '=', 'table_mod', ')')
             obj     <- eval( parse(text = out_txt) )
 
             #* return

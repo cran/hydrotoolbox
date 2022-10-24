@@ -12,15 +12,17 @@
 #'
 #' @description Remove spikes and set their value as \code{NA_real_}.
 #'
-#' @param x data frame with class Date in the first column and
-#' numeric on the others.
+#' @param x data frame or tibble with class Date or POSIX*
+#' in the first column.
 #' @param col_name string with column(s) name(s) where to apply the function.
-#' @param out_name optional. String with new column(s) name(s). If you set it as \code{NULL},
-#' the function will overwrite the original data frame.
-#' @param tolerance numeric vector with the maximum tolerance between a number and its successor.
-#' If you provide a single value it will be recycled.
+#' @param out_name optional. String with new column(s) name(s).
+#' If you set it as \code{NULL}, the function will overwrite the
+#' original table.
+#' @param tolerance numeric vector with the maximum tolerance between
+#' a number and its successor. If you provide a single value it will
+#' be recycled.
 #'
-#' @return The same data frame but with the peaks removed.
+#' @return The same table but with the peaks removed.
 #'
 #' @export
 #'
@@ -47,25 +49,40 @@ rm_spike <- function(x,
                      col_name,
                      out_name = NULL,
                      tolerance){
-  #**************************
+  #*+++++++++++++++++++
   #* conditionals
-  #**************************
+  #*+++++++++++++++++++
   #* x
-  check_class(argument = x, target = 'data.frame', arg_name = 'x')
-  check_class(argument = x[ , 1], target = c('Date', 'POSIXct') , arg_name = 'x[ , 1]')
-  check_class(argument = c( as.matrix( x[ , -1] ) ),
-              target = c('numeric') , arg_name = 'x[ , -1]')
+  check_class(argument = x,
+              target = c("tbl_df", "tbl", "data.frame"),
+              arg_name = 'x')
+
+  check_class(argument = x[ , 1, drop = TRUE],
+              target = c("Date", "POSIXct", "POSIXlt"),
+              arg_name = 'x[ , 1]')
+
+  # check_class(argument = c( as.matrix( x[ , -1] ) ),
+  #             target = c('numeric') , arg_name = 'x[ , -1]')
 
   #* col_name
-  check_class(argument = col_name, target = 'character', arg_name = 'col_name')
+  check_class(argument = col_name,
+              target = 'character',
+              arg_name = 'col_name')
+
   check_string(argument = col_name,
                target = colnames(x)[-1],
                arg_name = 'col_name')
 
+  check_class(argument = c( as.matrix( x[ , col_name, drop = FALSE] ) ),
+              target = c('numeric') ,
+              arg_name = 'x[ , col_name]')
+
   #* out_name
   if( !is.null(out_name) ){
 
-    check_class(argument = out_name, target = 'character', arg_name = 'out_name')
+    check_class(argument = out_name,
+                target = 'character',
+                arg_name = 'out_name')
 
     guess <- which( match(x = out_name, table = colnames(x) ) >= 1 )
     if( length(guess) != 0){
@@ -88,22 +105,26 @@ rm_spike <- function(x,
 
   #* tolerance
   n_it <- length(col_name)
-  check_class(argument = tolerance, target = c('numeric'), arg_name = 'tolerance')
+  check_class(argument = tolerance,
+              target = c('numeric'),
+              arg_name = 'tolerance')
+
   if( n_it > 1 & length(tolerance == 1) ){
 
     tolerance <- rep(tolerance, n_it)
 
   } else {
 
-    check_cross(ref_arg = col_name, eval_arg = tolerance,
+    check_cross(ref_arg = col_name,
+                eval_arg = tolerance,
                 arg_names = c('col_name', 'tolerance') )
 
   }
 
 
-  #**************************
+  #*+++++++++++++
   #* function
-  #**************************
+  #*+++++++++++++
   # get matrix
   mat_target <-
     x[ , col_name, drop = FALSE] %>%
@@ -129,13 +150,13 @@ rm_spike <- function(x,
     #* use out_name
     colnames(mat_rm) <- out_name
 
-    df_out <- x
+    df_out <- x %>% as.data.frame() # to avoid issues with tibble
     df_out[ , out_name] <- mat_rm
 
   } else {
     #* overwrite existing data frame
 
-    df_out <- x
+    df_out <- x %>% as.data.frame()  # to avoid issues with tibble
 
     df_out[ , col_name] <- mat_rm
 
@@ -145,6 +166,6 @@ rm_spike <- function(x,
   df_out[ , -1] <- as.matrix( df_out[ , -1] )
 
   #* return
-  return(df_out)
+  return(df_out %>% as_tibble())
 
 }

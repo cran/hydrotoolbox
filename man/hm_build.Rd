@@ -64,11 +64,11 @@ inside the \code{hydromet_station} slots.
 }
 \section{Functions}{
 \itemize{
-\item \code{hm_build,hydromet_station-method}: build method for hydromet station object
+\item \code{hm_build(hydromet_station)}: build method for hydromet station object
+
 }}
-
 \examples{
-
+\dontrun{
 # path to all example files
 path <- system.file('extdata', package = 'hydrotoolbox')
 
@@ -118,6 +118,6 @@ hm_create() \%>\%
 
 # mnemos => the data are the same of snih but generated
 #           with MNEMOSIII software.
-
+}
 
 }

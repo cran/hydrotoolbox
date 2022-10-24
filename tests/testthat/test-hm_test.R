@@ -1,4 +1,4 @@
-context("hm_set")
+#context("hm_set")
 
 
 # create an hydro-met station

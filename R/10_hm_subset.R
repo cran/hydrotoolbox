@@ -14,10 +14,10 @@
 #' @param obj a valid \code{hydromet_XXX} class object.
 #' @param slot_name string vector with the name(s) of the slot(s) to subset. If you use
 #' 'all' as argument the method will subset all the variables with data.
-#' @param from string \code{Date} or \code{POSIXct} value with the starting date. You can
+#' @param from string \code{Date} or \code{POSIX*} value with the starting date. You can
 #' use \code{from} without \code{to}. In this case you will subset your data \code{from}
 #' till the end.
-#' @param to string \code{Date} or \code{POSIXct} value with the starting date. You can
+#' @param to string \code{Date} or \code{POSIX*} value with the starting date. You can
 #' use \code{to} without \code{from}. In this case you will subset your data from the
 #' beginning till \code{to}.
 #'
@@ -26,7 +26,7 @@
 #' @export
 #'
 #' @examples
-#'
+#' \dontrun{
 #' # cuevas station
 #' path <- system.file('extdata', package = 'hydrotoolbox')
 #'
@@ -52,7 +52,7 @@
 #'           col_name = list('rh(%)'),
 #'           interactive = TRUE,
 #'           y_lab = 'RH(%)' )
-#'
+#'}
 #'
 setGeneric(name = 'hm_subset',
            def = function(obj, slot_name = 'all', from = NULL, to = NULL)
@@ -65,15 +65,27 @@ setGeneric(name = 'hm_subset',
 setMethod(f = 'hm_subset',
           signature = 'hydromet_station',
           definition = function(obj, slot_name = 'all', from = NULL, to = NULL){
-            #**************************
+
+            #*//////////////////
             #* conditionals
-            #**************************
+            #*//////////////////
             #* obj
-            check_class(argument = obj, target = 'hydromet_station', arg_name = 'obj')
+            check_class(argument = obj,
+                        target = 'hydromet_station',
+                        arg_name = 'obj')
 
             #* slot_name
-            check_class(argument = slot_name, target = 'character', arg_name = 'slot_name')
-            check_string(argument = slot_name, target = c('all', slotNames('hydromet_station')[1:23] ),
+            check_class(argument = slot_name,
+                        target = 'character',
+                        arg_name = 'slot_name')
+
+            allow_string <- setdiff(x = slotNames(x = "hydromet_station"),
+                                    y = slotNames(x = "hydromet")
+                                    )
+
+            check_string(argument = slot_name,
+                         target = c('all',
+                                    allow_string),
                          arg_name = 'slot_name')
 
             # to set all fill names
@@ -82,17 +94,28 @@ setMethod(f = 'hm_subset',
             }
 
             #* from
-            check_class(argument = from, target = c('character', 'POSIXct'), arg_name = 'from')
-            check_length(argument = from, max_allow = 1, arg_name = 'from')
+            check_class(argument = from,
+                        target = c('character', 'POSIXct', "POSIXlt"),
+                        arg_name = 'from')
+
+            check_length(argument = from,
+                         max_allow = 1,
+                         arg_name = 'from')
 
             #* to
-            check_class(argument = to, target = c('character', 'POSIXct'), arg_name = 'to')
-            check_length(argument = to, max_allow = 1, arg_name = 'to')
+            check_class(argument = to,
+                        target = c('character', 'POSIXct', "POSIXlt"),
+                        arg_name = 'to')
+
+            check_length(argument = to,
+                         max_allow = 1,
+                         arg_name = 'to')
 
 
-            #**************************
+            #*//////////////////
             #* function
-            #**************************
+            #*//////////////////
+
             #* loop in the slot_name arg
             n_it <- length(slot_name)
             date <- NULL # for binding
@@ -135,15 +158,22 @@ setMethod(f = 'hm_subset',
 setMethod(f = 'hm_subset',
           signature = 'hydromet_compact',
           definition = function(obj, slot_name = 'all', from = NULL, to = NULL){
-            #**************************
+
+            #*//////////////////
             #* conditionals
-            #**************************
+            #*//////////////////
             #* obj
-            check_class(argument = obj, target = 'hydromet_compact', arg_name = 'obj')
+            check_class(argument = obj,
+                        target = 'hydromet_compact',
+                        arg_name = 'obj')
 
             #* slot_name
-            check_class(argument = slot_name, target = 'character', arg_name = 'slot_name')
-            check_string(argument = slot_name, target = c('all', 'compact' ),
+            check_class(argument = slot_name,
+                        target = 'character',
+                        arg_name = 'slot_name')
+
+            check_string(argument = slot_name,
+                         target = c('all', 'compact'),
                          arg_name = 'slot_name')
 
             # to set all fill names
@@ -152,17 +182,28 @@ setMethod(f = 'hm_subset',
             }
 
             #* from
-            check_class(argument = from, target = c('character', 'POSIXct'), arg_name = 'from')
-            check_length(argument = from, max_allow = 1, arg_name = 'from')
+            check_class(argument = from,
+                        target = c('character', 'POSIXct', "POSIXlt"),
+                        arg_name = 'from')
+
+            check_length(argument = from,
+                         max_allow = 1,
+                         arg_name = 'from')
 
             #* to
-            check_class(argument = to, target = c('character', 'POSIXct'), arg_name = 'to')
-            check_length(argument = to, max_allow = 1, arg_name = 'to')
+            check_class(argument = to,
+                        target = c('character', 'POSIXct', "POSIXlt"),
+                        arg_name = 'to')
+
+            check_length(argument = to,
+                         max_allow = 1,
+                         arg_name = 'to')
 
 
-            #**************************
+            #*//////////////////
             #* function
-            #**************************
+            #*//////////////////
+
             #* loop in the slot_name arg
             n_it <- length(slot_name)
             date <- NULL # for binding

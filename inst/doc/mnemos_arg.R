@@ -33,14 +33,20 @@ library(hydrotoolbox)
 #  # the streamflow and water height series
 #  guido <-
 #    hm_create() %>% # create the met-station
-#    hm_build(bureau = 'mnemos', path = path,
-#             file_name = 'mnemos_guido.xlsx',
-#             slot_name = c('qd', 'evap', 'tair',
-#                           'tmax', 'tmin', 'wspd'),
-#             by = c('day', 'day', '6 hour',
-#                    'day', 'day', '6 hour'),
-#             out_name = c('qd(m3/s)', 'e(mm/d)', 'tdb(ºC)',
-#                          'tmax(ºC)', 'tmin(ºC)', 'w(km/h)') )
+#    hm_build_generic(path = path,
+#                     file_name = 'mnemos_guido.xlsx',
+#                     slot_name = c('qd', 'evap', 'tair',
+#                                   'tmax', 'tmin', 'wspd'),
+#                     by = c('day', 'day', '6 hour',
+#                            'day', 'day', '6 hour'),
+#                     out_name = list(c('qd(m3/s)', 'flag'),
+#                                     c('e(mm/d)', 'flag'),
+#                                     c('tdb(ºC)', 'flag'),
+#                                     c('tmax(ºC)', 'flag'),
+#                                     c('tmin(ºC)', 'flag'),
+#                                     c('w(km/h)', 'flag')),
+#                     FUN = read_mnemos,
+#                     sheet = 1L:6L)
 #  
 #  # we can explore the data-set inside it by using hm_show
 #  guido %>% hm_show()
