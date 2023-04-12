@@ -24,36 +24,40 @@ library(hydrotoolbox)
 
 ## Servicio Nacional de Información Hídrica (SNHI) dataset
 
-Sin lugar a dudas, el SNIH posee la más extensa base de datos hidro-meteorológicos (tanto desde
-el punto de vista espacial como temporal) para la  República Argentina (SNIH). 
-En él se pueden encontrar los registros de estaciones desde la Quiaca a Tierra del Fuego,
-además contiene series que datan de principios del siglo pasado.
+Sin lugar a dudas, el SNIH posee la más extensa base de datos
+hidro-meteorológicos (tanto desde el punto de vista espacial como temporal)
+para la  República Argentina (SNIH). En él se pueden encontrar los registros de
+estaciones desde la Quiaca a Tierra del Fuego, además contiene series que datan
+de principios del siglo pasado.
 
 ***
 
-Without a doubt, the SNIH has the most extensive hydro-meteorological database (both from
-the spatial and temporal point of view) for the Argentine Republic (SNIH).
-In it the user can find the records of stations from La Quiaca to Tierra del Fuego (northernmost 
-and southernmost places respectively), it also contains series dating from the beginning of
-the last century.
+Without a doubt, the SNIH has the most extensive hydro-meteorological
+database (both from the spatial and temporal point of view) for the Argentine
+Republic (SNIH). In it the user can find the records of stations from La Quiaca
+to Tierra del Fuego (northernmost and southernmost places respectively), it
+also contains series dating from the beginning of the last century.
 
 ## Reading individual files
 
 La página web permite descargar las variables medidas en cada estación de 
-a una por vez. El paquete **hydrotoolbox** ofrece la posibilidad de leer estos archivos 
-(formato *.xlsx*) de manera automática mediante la función `read_snih()`. Al hacerlo, se cargará
-al *Global Environment* de **R** un `data.frame` con los datos del archivo original. Cabe destacar
-que esta función rellena automáticamente los vacíos existentes entre registros con `NA_real_`.
-Las siguientes líneas de código muestran cómo aplicar esta función con la serie de caudales 
-medios diarios registradas en la estación Guido (provincia de Mendoza). 
+a una por vez. El paquete **hydrotoolbox** ofrece la posibilidad de leer
+estos archivos (formato *.xlsx*) de manera automática mediante la función
+`read_snih()`. Al hacerlo, se cargará al *Global Environment* de **R** un
+`data.frame` con los datos del archivo original. Cabe destacar que esta función
+rellena automáticamente los vacíos existentes entre registros con `NA_real_`.
+Las siguientes líneas de código muestran cómo aplicar esta función con la serie
+de caudales medios diarios registradas en la estación Guido (provincia de Mendoza). 
 
 ***
 
-The website allows you to download the variables measured at each station one at a time. **hydrotoolbox ** allows to read these files (*.xlsx* format) automatically using the `read_snih()`
-function. Doing so will load to the *Global Environment* a `data.frame` with the data from the
-original file. It should be noted that this function automatically fills the gaps between records 
-with `NA_real_`. In the following code lines I show how to apply this function with the 
-daily mean streamflow series recorded at the Guido station (Mendoza province).
+The website allows you to download the variables measured at each station
+one at a time. **hydrotoolbox ** allows to read these files (*.xlsx* format)
+automatically using the `read_snih()` function. Doing so will load to the
+*Global Environment* a `data.frame` with the data from the original file. It
+should be noted that this function automatically fills the gaps between records 
+with `NA_real_`. In the following code lines I show how to apply this function
+with the daily mean streamflow series recorded at the Guido station (Mendoza province).
 
 ```{r read_fun, eval=FALSE, fig.width = 6, fig.height = 4}
 # set path to file
@@ -78,9 +82,10 @@ plot(x = guido_qd[ , 1], y = guido_qd[ , 2], type = 'l',
      ylim = c(0, 200))
 ```
 
-Si bien esta función resulta de gran utilidad, a medida que la cantidad de variables a analizar
-crece, cargar estas tablas, ordenarlas y modificarlas, se vuelve tarea complicada. La solución
-que ofrece **hydrotoolbox** es la de trabajar con los objetos y métodos que el paquete provee. 
+Si bien esta función resulta de gran utilidad, a medida que la cantidad de
+variables a analizar crece, cargar estas tablas, ordenarlas y modificarlas,
+se vuelve tarea complicada. La solución que ofrece **hydrotoolbox** es la de
+trabajar con los objetos y métodos que el paquete provee. 
 En las siguientes secciones muestro cómo usarlos. 
 
 ***
@@ -93,17 +98,21 @@ that the package provides. In the following sections I will show you how to use 
 
 ## Using classes and methods to build a meteorological station
 
-Como menciono en los principios de diseño de este paquete (`vignette('package_overview', package = 'hydrotoolbox')`), los datos que se registran en las estaciones deben almacenarse en un mismo
-objeto. Por ello primero habrá que crear dicho objeto (o estación hidro-meteorológica) y luego
-usar `hm_build_generic()`, un método que permite cargar automáticamente al objeto todas las variables
-que la estación real registra. 
+Como menciono en los principios de diseño de este paquete
+(`vignette('package_overview', package = 'hydrotoolbox')`), los datos que se
+registran en las estaciones deben almacenarse en un mismo objeto. Por ello
+primero habrá que crear dicho objeto (o estación hidro-meteorológica) y luego
+usar `hm_build_generic()`, un método que permite cargar automáticamente al
+objeto todas las variables que la estación real registra. 
 
 ***
 
-As I mentioned in the design principles of this package (`vignette ('package_overview', package = 'hydrotoolbox')`), the data that is recorded in the stations must be stored in the same
-object. For this reason, you must first create the object (or hydro-meteorological station) and
-then use `hm_build_generic()`, a method that allows you to automatically load all variables to the object
-that the real world station records.
+As I mentioned in the design principles of this package
+(`vignette ('package_overview', package = 'hydrotoolbox')`), the data that is
+recorded in the stations must be stored in the same object. For this reason,
+you must first create the object (or hydro-meteorological station) and
+then use `hm_build_generic()`, a method that allows you to automatically load
+all variables to the object that the real world station records.
 
 ```{r build, eval=FALSE, fig.width = 6, fig.height = 4}
 # in this path you will find the raw example data 
@@ -138,17 +147,19 @@ guido %>% hm_show(slot_name = 'qd')
 ## Data visualization
 
 Una de las herramientas más útiles para analizar series hidrológicas y sintetizar 
-resultados son los gráficos. En esta sección muestro cómo emplear `hm_plot()`, método 
-que permite graficar series de tiempo de forma estática y dinámica a través de argumentos
-intuitivos y por lo tanto sencillos de aplicar. 
-`hm_plot()` usa internamente parte de la funcionalidad de los paquetes `ggplot2` y `plotly`.
+resultados son los gráficos. En esta sección muestro cómo emplear `hm_plot()`,
+método que permite graficar series de tiempo de forma estática y dinámica a
+través de argumentos intuitivos y por lo tanto sencillos de aplicar. 
+`hm_plot()` usa internamente parte de la funcionalidad de los paquetes
+`ggplot2` y `plotly`.
 
 ***
 
 One of the most useful tools to analyze hydrological series and synthesize
-results are graphics. In this section I show how to use `hm_plot ()`, a method that allows
-to plot time series statically and dynamically through intuitive arguments.
-`hm_plot ()` uses some of the functionality of the `ggplot2` and `plotly` packages.
+results are graphics. In this section I show how to use `hm_plot ()`, a method
+that allows to plot time series statically and dynamically through intuitive
+arguments. `hm_plot ()` uses some of the functionality of the `ggplot2` and
+`plotly` packages.
 
 ```{r plot_1, eval=FALSE, fig.width = 6, fig.height = 4, warning = FALSE}
 # we ask hydrotolkit to show all the variables 
@@ -180,14 +191,15 @@ guido %>%
 
 ## Access to met-satation information
 
-En esta sección muestro cómo usar los métodos `hm_show()`, `hm_report()` y  `hm_get()`. Éstos
-sirven para obtener información cuantitativa acerca de los datos y para extraer las tablas
-de la estación.
+En esta sección muestro cómo usar los métodos `hm_show()`, `hm_report()` y
+`hm_get()`. Éstos sirven para obtener información cuantitativa acerca de los
+datos y para extraer las tablas de la estación.
 
 ***
 
-In this section I show how to use the `hm_show()`, `hm_report()` and `hm_get()` methods. They 
-are used to obtain quantitative information about the data and to extract out of the `hydromet_station` object the `data.frames`.
+In this section I show how to use the `hm_show()`, `hm_report()` and `hm_get()`
+methods. They are used to obtain quantitative information about the data and to
+extract out of the `hydromet_station` object the `data.frames`.
 
 ```{r show, eval=FALSE, fig.width = 6, fig.height = 4, warning = FALSE}
 # the show method allows to get an idea about the stored variables
@@ -215,15 +227,17 @@ guido %>%
 
 ## Data transformation
 
-Como menciono en los principios de diseño del paquete, las modificaciones se deben poder almacenar
-en el mismo archivo con el fin de evitar las múltiples vesiones. En esta sección vamos a ver
-algunos ejemplos en el uso de los métodos `hm_mutate()` y `hm_melt()`.
+Como menciono en los principios de diseño del paquete, las modificaciones se
+deben poder almacenar en el mismo archivo con el fin de evitar las múltiples
+vesiones. En esta sección vamos a ver algunos ejemplos en el uso de los métodos
+`hm_mutate()` y `hm_melt()`.
 
 ***
 
-As I mention in the package design principles, modifications must be able to be stored
-in the same file, in order to avoid the multiple versioning issue. In this section we will see
-some examples with `hm_mutate()` and `hm_melt()` methods.
+As I mention in the package design principles, modifications must be able to
+be stored in the same file, in order to avoid the multiple versioning issue.
+In this section we will see some examples with `hm_mutate()` and `hm_melt()`
+methods.
 
 ```{r mutate, eval=FALSE, eval=FALSE, fig.width = 6, fig.height = 4, warning = FALSE}
 # apply a moving average windows to streamflow records
@@ -273,4 +287,41 @@ hm_create(class_name = 'compact') %>%
                y_lab = c('q(m3/s)', 'swe(mm)'),
                dual_yaxis = c('right', 'left')
                 )
+```
+
+
+## Quality flags and non-numeric columns
+
+Desde la versión *1.1.0* del paquete, los objetos `hydromet_station` y
+`hydromet_compact` admiten columnas no numéricas. Esto  permite agregar
+metadatos varios a las series en cuestión. 
+
+***
+
+Since version *1.1.0* of the package, the `hydromet_station` and
+`hydromet_compact` objects support non-numeric columns. This allows to add
+several metadata-types to the tables.
+
+```{r quality-flag, eval=FALSE, fig.width = 6, fig.height = 4, warning = FALSE}
+# we are going to add come quality-flags to the data
+library(tibble)
+
+my_station <- hm_create(class_name = "station")
+
+my_tb <-
+  tibble(
+        date = seq.POSIXt(from = ISOdate(2022, 1, 1, 0, 0, 0),
+        to = ISOdate(2022, 1, 1, 23, 0, 0),
+        by = "hour" ),
+        random_var = runif(n = 24, min = 0, max = 10),
+        unit = "my_units",
+        quality_flag = c(rep("good", 20), rep("bad", 4))
+        )
+
+my_station <-
+  my_station %>%
+  hm_set(unvar = my_tb)
+
+my_station %>% hm_show()
+
 ```

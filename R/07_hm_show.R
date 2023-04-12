@@ -9,13 +9,14 @@
 # **********************************************************
 #' Easy access to see your data
 #'
-#' @description This method shows the 'head' or 'tail' of a specific slot.
+#' @description This method shows the 'head', 'tail' or 'all'
+#' data from specific slot.
 #'
 #' @param obj a valid \code{hydromet_XXX} class object.
 #' @param slot_name string vector with the name of the slot(s) to show. Alternatively
 #' you can use \code{'fill'} or \code{'empty'} to get the data frames with or without
 #' data respectively.
-#' @param show string with either \code{'head'} or \code{'tail'}.
+#' @param show string with either \code{'head'}, \code{'tail'} or \code{'all'}.
 #'
 #' @return It prints the data inside the required slot.
 #'
@@ -49,6 +50,9 @@
 #'
 #' # see the last values of our data
 #' hm_show(obj = hm_cuevas, show = 'tail')
+#'
+#'# print the entire tables
+#' hm_show(obj = hm_cuevas, show = "all")
 #'
 #' # or maybe we want to know which slot have no data
 #' hm_show(obj = hm_cuevas, slot_name = 'empty')
@@ -95,7 +99,7 @@ setMethod(f = 'hm_show',
                         arg_name = 'show')
 
             check_string(argument = show,
-                         target = c('head', 'tail'),
+                         target = c('head', 'tail', "all"),
                          arg_name = 'show')
 
             check_length(argument = show,
@@ -117,7 +121,7 @@ setMethod(f = 'hm_show',
                 # get the data
                 data_out <- hm_get(obj = obj, slot_name = slot_nm[i])
 
-                if( is.null(data_out) == TRUE | !is.na(data_out) ){
+                if( is.null(data_out) == FALSE | !is.na(data_out) ){
 
                   if(show == 'head'){
                     out[[ slot_nm[i] ]] <- head( data_out )
@@ -143,17 +147,27 @@ setMethod(f = 'hm_show',
                 # get the data
                 data_out <- hm_get(obj = obj, slot_name = slot_nm[i])
 
-                if( is.null(data_out) == FALSE | is.na(data_out)){
+                if( is.null(data_out)  ){
 
-                  if(show == 'head'){
-                    out[[ slot_nm[i] ]] <- head( data_out )
+                  out[ slot_nm[i] ] <- list(data_out)
 
-                  } else {
-                    out[[ slot_nm[i] ]] <- tail( data_out )
-                  }
+                } else if( is.na(data_out) ){
 
+                  out[[ slot_nm[i] ]] <- data_out
 
                 }
+
+                # if( is.null(data_out) == FALSE | is.na(data_out)){
+                #
+                #   if(show == 'head'){
+                #     out[[ slot_nm[i] ]] <- head( data_out )
+                #
+                #   } else {
+                #     out[[ slot_nm[i] ]] <- tail( data_out )
+                #   }
+                #
+                #
+                # }
 
                 rm(data_out)
 
@@ -222,7 +236,7 @@ setMethod(f = 'hm_show',
                         arg_name = 'show')
 
             check_string(argument = show,
-                         target = c('head', 'tail'),
+                         target = c('head', 'tail', "all"),
                          arg_name = 'show')
 
             check_length(argument = show,
@@ -252,8 +266,13 @@ setMethod(f = 'hm_show',
                  if(show == 'head'){
                    out[[ slot_nm[i] ]] <- head( data_out )
 
-                 } else {
+                 } else if(show == "tail") {
                    out[[ slot_nm[i] ]] <- tail( data_out )
+
+                 } else{
+
+                   out[[ slot_nm[i] ]] <-  data_out
+
                  }
 
 
@@ -276,17 +295,29 @@ setMethod(f = 'hm_show',
                 # get the data
                 data_out <- hm_get(obj = obj, slot_name = slot_nm[i])
 
-                if( ncol(data_out) == 0){
+                if( is.null(data_out)  ){
 
-                  if(show == 'head'){
-                    out[[ slot_nm[i] ]] <- head( data_out )
-
-                  } else {
-                    out[[ slot_nm[i] ]] <- tail( data_out )
-                  }
-
+                  out[ slot_nm[i] ] <- list(data_out)
 
                 }
+
+                # else if( is.na(data_out) ){
+                #
+                #   out[[ slot_nm[i] ]] <- data_out
+                #
+                # }
+
+                # if( is.null(data_out) == FALSE | is.na(data_out)){
+                #
+                #   if(show == 'head'){
+                #     out[[ slot_nm[i] ]] <- head( data_out )
+                #
+                #   } else {
+                #     out[[ slot_nm[i] ]] <- tail( data_out )
+                #   }
+                #
+                #
+                # }
 
                 rm(data_out)
 
@@ -302,13 +333,38 @@ setMethod(f = 'hm_show',
                 # get the data
                 data_out <- hm_get(obj = obj, slot_name = slot_nm[i])
 
-                if(show == 'head'){
+
+                if( is.null(data_out)  ){
+
+                  out[ slot_nm[i] ] <- list(data_out)
+
+                } else{
+
+                  if(show == "head"){
+
                     out[[ slot_nm[i] ]] <- head( data_out )
 
-                  } else {
+                  } else if(show == "tail"){
+
                     out[[ slot_nm[i] ]] <- tail( data_out )
 
+                  } else{
+
+                    out[[ slot_nm[i] ]] <- data_out
+
                   }
+
+
+
+                }
+
+                # if(show == 'head'){
+                #     out[[ slot_nm[i] ]] <- head( data_out )
+                #
+                #   } else {
+                #     out[[ slot_nm[i] ]] <- tail( data_out )
+                #
+                #   }
 
                 rm(data_out)
 
@@ -355,7 +411,7 @@ setMethod(f = 'hm_show',
                         arg_name = 'show')
 
             check_string(argument = show,
-                         target = c('head', 'tail'),
+                         target = c('head', 'tail', "all"),
                          arg_name = 'show')
 
             check_length(argument = show,
@@ -380,10 +436,17 @@ setMethod(f = 'hm_show',
                 if(  !is.null(data_out)){
 
                   if(show == 'head'){
+
                     out[[ slot_nm[i] ]] <- head( data_out )
 
-                  } else {
+                  } else if(show == "tail"){
+
                     out[[ slot_nm[i] ]] <- tail( data_out )
+
+                  } else{
+
+                    out[[ slot_nm[i] ]] <-  data_out
+
                   }
 
 
@@ -403,17 +466,29 @@ setMethod(f = 'hm_show',
                 # get the data
                 data_out <- hm_get(obj = obj, slot_name = slot_nm[i])
 
-                if( ncol(data_out) == 0){
+                if( is.null(data_out)  ){
 
-                  if(show == 'head'){
-                    out[[ slot_nm[i] ]] <- head( data_out )
-
-                  } else {
-                    out[[ slot_nm[i] ]] <- tail( data_out )
-                  }
-
+                  out[ slot_nm[i] ] <- list(data_out)
 
                 }
+
+                # else if( is.na(data_out) ){
+                #
+                #   out[[ slot_nm[i] ]] <- data_out
+                #
+                # }
+
+                # if( is.null(data_out) == FALSE | is.na(data_out)){
+                #
+                #   if(show == 'head'){
+                #     out[[ slot_nm[i] ]] <- head( data_out )
+                #
+                #   } else {
+                #     out[[ slot_nm[i] ]] <- tail( data_out )
+                #   }
+                #
+                #
+                # }
 
                 rm(data_out)
 
@@ -432,8 +507,12 @@ setMethod(f = 'hm_show',
                 if(show == 'head'){
                   out[[ slot_nm[i] ]] <- head( data_out )
 
-                } else {
+                } else if(show == "tail"){
                   out[[ slot_nm[i] ]] <- tail( data_out )
+
+                } else {
+
+                  out[[ slot_nm[i] ]] <- data_out
 
                 }
 

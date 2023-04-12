@@ -165,13 +165,13 @@ interpolate <- function(x,
   }
 
   n_it <- length(miss_rows)
-  out  <- x[ , col_name]
+  out  <- x[ , col_name, drop = TRUE] # because I want the vector
 
 
 
   for(i in 1:n_it){
-    i1 <- which( x[ , 1] == miss_table[miss_rows[i], 1] ) # first interpo position
-    i2 <- which( x[ , 1] == miss_table[miss_rows[i], 2] ) # last interpo position
+    i1 <- which( x[ , 1, drop = TRUE] == miss_table[miss_rows[i], 1] ) # first interpo position
+    i2 <- which( x[ , 1, drop = TRUE] == miss_table[miss_rows[i], 2] ) # last interpo position
 
     # first and last position can not be interpolated
     if( i1 != 1 & i2 != nrow(x) ){
@@ -179,7 +179,7 @@ interpolate <- function(x,
       j1 <- i1 - 1 # first to extract
       j2 <- i2 + 1 # last to extract
 
-      var_aux <- x[j1:j2, col_name]
+      var_aux <- x[j1:j2, col_name, drop = TRUE]
 
       aux <- approx(x = j1:j2, y = var_aux, xout = i1:i2)[[2]]
 
@@ -196,7 +196,7 @@ interpolate <- function(x,
   #* set out_name
   if( !is.null(out_name) ){
     #* use out_name
-    out <- data.frame( x[ , 1], out )
+    out <- data.frame( x[ , 1, drop = TRUE], out )
     colnames(out) <- c( 'date', out_name)
 
     df_out <- merge(x = x, y = out, all.x = TRUE)

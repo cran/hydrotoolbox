@@ -2,8 +2,8 @@ Package: hydrotoolbox
 Type: Package
 Title: Hydrological Tools for Handling Hydro-Meteorological Data
         Records
-Version: 1.1.0
-Date: 2022-10-24
+Version: 1.1.2
+Date: 2023-04-12
 Author: Ezequiel Toum <etoum@mendoza-conicet.gob.ar>
 Maintainer: Ezequiel Toum <etoum@mendoza-conicet.gob.ar>
 Description: Read, plot, manipulate and process hydro-meteorological data records (with special features for Argentina and Chile data-sets).
@@ -19,6 +19,6 @@ LinkingTo: Rcpp
 Suggests: testthat, knitr, rmarkdown
 VignetteBuilder: knitr
 NeedsCompilation: yes
-Packaged: 2022-10-24 16:05:55 UTC; eze
+Packaged: 2023-04-12 19:07:50 UTC; eze
 Repository: CRAN
-Date/Publication: 2022-10-24 17:05:08 UTC
+Date/Publication: 2023-04-12 19:30:02 UTC

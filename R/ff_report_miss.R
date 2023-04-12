@@ -21,9 +21,8 @@
 #' @return A list containing a data frame (one per \code{col_name})
 #' with three columns: start-date, end-date and number of missing
 #' time steps. In the last row of the table you will find the total
-#' number of missing measurements (under "time_step" column). The
-#' "first" and "last" columns will have a \code{NA_character} for
-#' this last row.
+#' number of missing measurements (under "time_step" column). That's why
+#' under start and end-date columns you will find \code{NA}.
 #'
 #' @export
 #'
@@ -118,7 +117,9 @@ report_miss <- function(x, col_name = 'all'){
     delta_t <- c( delta_t, sum(delta_t) )
 
     # create report miss table and fill out_list
-    out_table <- data.frame(first = first_date, last = last_date, time_steps = delta_t)
+    out_table <- data.frame(first = first_date,
+                            last = last_date,
+                            time_steps = delta_t)
 
     out_list[[ col_name[i] ]] <- out_table
 
@@ -127,6 +128,10 @@ report_miss <- function(x, col_name = 'all'){
        first_date, last_date, delta_t, out_table)
 
   }# end for loop
+
+  # add final comment
+  out_list[[ "comment" ]] <-
+    "Missings total are in the last row."
 
   #* return list
   return(out_list)

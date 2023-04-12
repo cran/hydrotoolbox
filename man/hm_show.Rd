@@ -22,13 +22,14 @@ hm_show(obj, slot_name = "fill", show = "head")
 you can use \code{'fill'} or \code{'empty'} to get the data frames with or without
 data respectively.}
 
-\item{show}{string with either \code{'head'} or \code{'tail'}.}
+\item{show}{string with either \code{'head'}, \code{'tail'} or \code{'all'}.}
 }
 \value{
 It prints the data inside the required slot.
 }
 \description{
-This method shows the 'head' or 'tail' of a specific slot.
+This method shows the 'head', 'tail' or 'all'
+data from specific slot.
 }
 \section{Functions}{
 \itemize{
@@ -63,6 +64,9 @@ hm_show(obj = hm_cuevas)
 
 # see the last values of our data
 hm_show(obj = hm_cuevas, show = 'tail')
+
+# print the entire tables
+hm_show(obj = hm_cuevas, show = "all")
 
 # or maybe we want to know which slot have no data
 hm_show(obj = hm_cuevas, slot_name = 'empty')

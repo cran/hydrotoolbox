@@ -1,12 +1,13 @@
 citHeader("To cite hydrotoolbox in publications use:")
 
-citEntry(entry = "manual",
-	 title = "hydrotoolbox: Hydrological Tools for Handling Hydro-Meteorological Data Records",
-	 author = as.person("Ezequiel Toum"),
-   year = "2021",
-	 note = "1.0.0",
+bibentry(
+   bibtype = "Manual",
+   title = "hydrotoolbox: Hydrological Tools for Handling Hydro-Meteorological Data Records",
+	 author = person("Ezequiel", "Toum", role = "aut"),
+	 organization = "IANIGLA-CONICET",
+	 address = "Mendoza, Argentina",
+   year = "2023",
+	 note = "1.1.2",
 	 url = "https://CRAN.R-project.org/package=hydrotoolbox",
-	 textVersion =
-         paste("Ezequiel Toum (", "2021","). ",
-               "hydrotoolbox: Hydrological Tools for Handling Hydro-Meteorological Data Records. ", "version 1.0.0", ".", sep = "")
+	 key = "hydrotoolbox-package"
 )

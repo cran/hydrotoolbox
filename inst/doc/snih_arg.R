@@ -151,3 +151,26 @@ library(hydrotoolbox)
 #                 dual_yaxis = c('right', 'left')
 #                  )
 
+## ----quality-flag, eval=FALSE, fig.width = 6, fig.height = 4, warning = FALSE----
+#  # we are going to add come quality-flags to the data
+#  library(tibble)
+#  
+#  my_station <- hm_create(class_name = "station")
+#  
+#  my_tb <-
+#    tibble(
+#          date = seq.POSIXt(from = ISOdate(2022, 1, 1, 0, 0, 0),
+#          to = ISOdate(2022, 1, 1, 23, 0, 0),
+#          by = "hour" ),
+#          random_var = runif(n = 24, min = 0, max = 10),
+#          unit = "my_units",
+#          quality_flag = c(rep("good", 20), rep("bad", 4))
+#          )
+#  
+#  my_station <-
+#    my_station %>%
+#    hm_set(unvar = my_tb)
+#  
+#  my_station %>% hm_show()
+#  
+

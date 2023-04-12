@@ -17,9 +17,8 @@ By default the function will report all numeric columns.}
 A list containing a data frame (one per \code{col_name})
 with three columns: start-date, end-date and number of missing
 time steps. In the last row of the table you will find the total
-number of missing measurements (under "time_step" column). The
-"first" and "last" columns will have a \code{NA_character} for
-this last row.
+number of missing measurements (under "time_step" column). That's why
+under start and end-date columns you will find \code{NA}.
 }
 \description{
 Creates a data frame with reported dates and number of

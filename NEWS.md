@@ -1,6 +1,15 @@
-# hydrotoolbox v 1.1.0
+# hydrotoolbox v 1.1.1
 
-### Major changes
+### Minor changes
+* Package documentation updated.
+
+* `interpolate` function now accepts `tibbles`.
+
+* Informative comment added to `hm_report` and `report_miss`
+functions.
+
+
+### Major changes (v 1.1.0)
 * The `hydromet_*-classes` now accepts `tibbles`. Also, the 
 column classes of the slots could be any (and not just numeric).
 
@@ -10,6 +19,3 @@ raw files.
 
 * The `hydromet_station` class has new slots: outgoing longwave
 and shortwave radiation.
-
-### Minor changes
-* Package documentation updated.

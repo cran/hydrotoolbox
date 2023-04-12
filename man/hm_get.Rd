@@ -50,11 +50,22 @@ cuevas <-
 
 # create and set one the variables
 hm_cuevas <-
-      hm_create() \%>\%
-      hm_set(tair = cuevas[ , c('date', 'tair(°C)')])
+ hm_create() \%>\%
+ hm_set(tair = cuevas[ , c('date', 'tair(°C)')],
+        rh = cuevas[ , c("date", 'rh(\%)')])
+
 
 # now extract the slot of air temperature
 head( hm_get(obj = hm_cuevas, slot_name = 'tair') )
+
+# extract multiple data
+out_list <- list()
+for(i in c("tair", "rh")){
+ out_list[[ i ]] <-
+   hm_cuevas \%>\%
+   hm_get(slot_name = i)
+ }
+
 }
 
 }
